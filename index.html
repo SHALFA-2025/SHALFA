@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><title>SHALFA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Montserrat:wght@300;500;600;700;800&display=swap">
+<style>
+/* Layout concept: one pinned stage where the real boat sails, opens and unpacks itself; engineering-datasheet sections follow. Dark-first, single look. */
+:root{
+  --bg:#080D12; --bg2:#111B22; --bg3:#17252E; --line:#22343f;
+  --green:#00B86B; --green-d:#0B5142; --cyan:#19B6C8; --amber:#E8B04B;
+  --fg:#F5F7FA; --fg2:#A8B5BF; --fg3:#6F8190;
+  --f-disp:'Montserrat','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --f-body:'IBM Plex Sans Arabic','Montserrat',system-ui,sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  --gut:clamp(16px,4vw,56px); --hdr:60px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.75;margin:0;overflow-x:hidden}
+html[lang="ar"] .en,html[lang="en"] .ar{display:none!important}
+a{color:inherit}
+img{max-width:100%;display:block}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.mono{font-family:var(--f-mono);direction:ltr;unicode-bidi:isolate}
+
+/* header */
+.top{position:fixed;inset-inline:0;top:env(safe-area-inset-top,0px);z-index:50;height:var(--hdr);display:flex;align-items:center;gap:12px;padding-inline:var(--gut);background:linear-gradient(#080D12ee,#080D1200)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:800 18px var(--f-disp);letter-spacing:.14em}
+.brand img{width:34px;height:34px;object-fit:contain}
+.top .sp{flex:1}
+.pill{border:1px solid var(--line);background:#0c141acc;backdrop-filter:blur(8px);border-radius:99px;padding:6px 16px;font:600 13px var(--f-disp);letter-spacing:.06em}
+.pill:hover{border-color:var(--green)}
+.menu{position:fixed;inset:0;z-index:60;background:#060a0ef2;backdrop-filter:blur(14px);display:flex;flex-direction:column;justify-content:center;padding:var(--gut);gap:2px;overflow:auto}
+.menu[hidden]{display:none}
+.menu a{display:flex;gap:16px;align-items:baseline;text-decoration:none;font:700 clamp(22px,4vw,34px) var(--f-disp);padding:6px 0;border-bottom:1px solid #ffffff10;color:var(--fg2)}
+.menu a:hover{color:var(--fg)}
+.menu a small{font:500 12px var(--f-mono);color:var(--green);min-width:2.2em}
+.menu .x{position:absolute;inset-block-start:14px;inset-inline-end:var(--gut)}
+
+/* journey stage */
+.track{height:560vh;position:relative}
+.stick{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden;background:radial-gradient(120% 90% at 50% 40%,#0d2a30 0%,#08141a 55%,#060b0f 100%)}
+#water{position:absolute;inset:0;width:100%;height:100%}
+.vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 45%,#05090dcc 100%);pointer-events:none}
+.hero-copy{position:absolute;inset-inline-start:var(--gut);top:50%;transform:translateY(-50%);width:min(520px,44vw);z-index:5}
+.hero-logo{width:clamp(88px,9vw,128px);margin-bottom:18px;filter:drop-shadow(0 0 24px #00b86b55)}
+.hero-copy h1{font:800 clamp(52px,8vw,112px)/.95 var(--f-disp);letter-spacing:.06em;margin:0}
+.hero-copy h1 .ar{font-family:var(--f-body);letter-spacing:0;font-weight:700}
+.hero-copy .sub{font:600 clamp(15px,1.5vw,20px) var(--f-disp);color:var(--green);letter-spacing:.14em;text-transform:uppercase;margin:16px 0 6px}
+html[lang=ar] .hero-copy .sub{letter-spacing:0;text-transform:none}
+.hero-copy .tagline{font:300 clamp(18px,2vw,26px)/1.4 var(--f-disp);margin:0 0 14px}
+.hero-copy .desc{color:var(--fg2);font-size:15px;margin:0 0 22px;max-width:46ch}
+.cta{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:4px;background:var(--green);color:#03150d;font:700 14px var(--f-disp);text-decoration:none;letter-spacing:.04em}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid #ffffff40}
+.btn:hover{filter:brightness(1.12)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px}
+.chips span{font:500 11px var(--f-mono);color:var(--fg2);border:1px solid var(--line);padding:3px 9px;border-radius:99px;background:#0b141a99}
+.boat{position:absolute;left:0;top:0;will-change:transform;perspective:1700px;z-index:3}
+.boat .hull{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0}
+.boat .lid{position:absolute;left:50%;top:0;height:100%;width:auto;transform-origin:50% 100%;transform:translateX(-50%);filter:drop-shadow(0 18px 30px #000a)}
+.scan{position:absolute;left:-4%;right:-4%;height:70px;top:0;margin-top:-35px;background:linear-gradient(transparent,#19b6c855 48%,#19b6c8cc 50%,#19b6c855 52%,transparent);opacity:0;pointer-events:none;mix-blend-mode:screen}
+#spots{position:absolute;inset:0;z-index:4;pointer-events:none}
+.spot{position:absolute;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;border:1.5px solid var(--cyan);background:#19b6c826;display:grid;place-items:center;font:700 11px var(--f-mono);color:#fff;opacity:0}
+.spot::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid var(--cyan);animation:ping 2.2s infinite;opacity:.0}
+.spot.sq{border-radius:4px}
+.spot.on::after{opacity:.7}
+@keyframes ping{0%{transform:scale(.7);opacity:.8}100%{transform:scale(1.6);opacity:0}}
+#leaders{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;overflow:visible}
+#leaders path{fill:none;stroke:var(--cyan);stroke-width:1.2;stroke-dasharray:1;stroke-dashoffset:1;opacity:.75}
+#tiles{position:absolute;inset:0;z-index:6;pointer-events:none;direction:ltr}
+.tile{position:absolute;width:var(--tw,300px);height:122px;display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center;padding:10px;text-align:start;background:linear-gradient(135deg,#142630ee,#0b151bee);border:1px solid #2c4654;border-radius:8px;opacity:0;pointer-events:none;box-shadow:0 14px 40px #000a;backdrop-filter:blur(6px);will-change:transform,opacity}
+.tile.live{pointer-events:auto}
+.tile:hover{border-color:var(--green)}
+.tile img{width:96px;height:100px;object-fit:cover;border-radius:5px;background:#05090c}
+.tile .tx{direction:ltr;min-width:0}
+html[lang=ar] .tile .tx{direction:rtl}
+.tile b{display:block;font:700 13.5px/1.25 var(--f-disp);margin-bottom:3px}
+html[lang=ar] .tile b{font-family:var(--f-body)}
+.tile p{margin:0;font-size:11.8px;line-height:1.45;color:var(--fg2);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.tile .no{position:absolute;top:-10px;inset-inline-start:-10px;width:24px;height:24px;border-radius:50%;background:var(--cyan);color:#021a1e;font:700 11px/24px var(--f-mono);text-align:center}
+.tile .ondeck{font:500 9.5px var(--f-mono);color:var(--amber);margin-top:2px;display:block}
+.caption{position:absolute;bottom:clamp(18px,5vh,44px);left:50%;transform:translateX(-50%);z-index:7;display:flex;align-items:center;gap:10px;padding:8px 18px;border-radius:99px;border:1px solid var(--line);background:#0a1319d9;backdrop-filter:blur(8px);font:600 13px var(--f-disp);white-space:nowrap;opacity:0;transition:opacity .4s}
+.caption i{font:500 11px var(--f-mono);color:var(--green);font-style:normal}
+.cue{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:7;font:500 11px var(--f-mono);letter-spacing:.2em;color:var(--fg2);text-align:center;transition:opacity .3s}
+.cue::after{content:"";display:block;width:1px;height:34px;margin:8px auto 0;background:linear-gradient(var(--green),transparent);animation:cue 1.8s infinite}
+@keyframes cue{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.prog{position:absolute;inset-inline:0;bottom:0;height:2px;background:#ffffff10;z-index:8}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--cyan))}
+.parts-mobile{display:none}
+
+/* sections */
+section.s{padding:clamp(72px,11vw,150px) var(--gut);max-width:1280px;margin-inline:auto;position:relative}
+.band{background:var(--bg2);border-block:1px solid var(--line);max-width:none!important}
+.band>.in{max-width:1280px;margin-inline:auto}
+.eyebrow{font:500 12px var(--f-mono);letter-spacing:.2em;color:var(--green);text-transform:uppercase;margin:0 0 14px}
+html[lang=ar] .eyebrow{letter-spacing:.05em}
+h2{font:800 clamp(30px,4.6vw,56px)/1.1 var(--f-disp);margin:0 0 22px;text-wrap:balance;letter-spacing:-.01em}
+html[lang=ar] h2,html[lang=ar] h3{font-family:var(--f-body);letter-spacing:0}
+h3{font:700 20px/1.3 var(--f-disp);margin:0 0 10px}
+.lead{font-size:clamp(16px,1.5vw,19px);color:var(--fg2);max-width:68ch;margin:0 0 36px}
+p{margin:0 0 14px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:22px;min-width:0}
+.band .card{background:var(--bg3)}
+.card p,.card li{color:var(--fg2);font-size:14.5px}
+ul.dots{list-style:none;padding:0;margin:0;display:grid;gap:7px}
+ul.dots li{position:relative;padding-inline-start:18px;color:var(--fg2);font-size:14.5px;line-height:1.6}
+ul.dots li::before{content:"";position:absolute;inset-inline-start:0;top:.7em;width:7px;height:1.5px;background:var(--green)}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font:500 12.5px var(--f-body);border:1px solid var(--line);border-radius:99px;padding:4px 14px;color:var(--fg2);background:#0b141a}
+.note{border-inline-start:3px solid var(--amber);background:#e8b04b12;padding:12px 16px;border-radius:0 6px 6px 0;color:#e9d3a4;font-size:14px;margin:18px 0}
+html[dir=rtl] .note{border-radius:6px 0 0 6px}
+.note.ok{border-color:var(--green);background:#00b86b12;color:#a8e8cb}
+.status{display:inline-block;font:600 11px var(--f-mono);letter-spacing:.06em;padding:3px 10px;border-radius:99px;margin-bottom:10px;text-transform:uppercase}
+.st-ok{background:#00b86b22;color:#4ee0a0;border:1px solid #00b86b66}
+.st-part{background:#e8b04b1f;color:#f0c670;border:1px solid #e8b04b66}
+.st-plan{background:#19b6c81f;color:#6fd6e4;border:1px solid #19b6c866}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:34px 0}
+.facts div{background:var(--bg2);padding:16px 18px}
+.facts small{display:block;font:500 11px var(--f-mono);color:var(--fg3);text-transform:uppercase;letter-spacing:.1em}
+.facts b{font:700 16px var(--f-disp)}
+html[lang=ar] .facts b{font-family:var(--f-body)}
+
+/* architecture svg */
+.svgwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#0a1117;padding:8px}
+.svgwrap svg{display:block;min-width:820px;width:100%;height:auto}
+svg text{font-family:var(--f-body);fill:var(--fg)}
+svg .mono{font-family:var(--f-mono)}
+.nd rect{fill:#13222b;stroke:#2d4a58;stroke-width:1.2;transition:.2s}
+.nd{cursor:pointer}
+.nd:hover rect,.nd.sel rect{fill:#0f3a33;stroke:var(--green)}
+.nd.laptop rect{stroke:var(--cyan);fill:#0f2a33}
+.nd.laptop:hover rect,.nd.laptop.sel rect{fill:#0f3d46;stroke:var(--cyan)}
+.nd text{font-size:13px;font-weight:600;pointer-events:none}
+.nd .s2{font-size:10.5px;fill:var(--fg2);font-weight:400}
+.zone{fill:none;stroke:#2d4a58;stroke-dasharray:6 6}
+.zone.lap{stroke:var(--cyan)}
+.zl{font:500 11px var(--f-mono);fill:var(--fg3);letter-spacing:.14em}
+.flow{fill:none;stroke:var(--green);stroke-width:1.6;stroke-dasharray:6 6;animation:dash 1.4s linear infinite}
+.flow.c{stroke:var(--cyan)}
+.flow.th{stroke:var(--amber);opacity:.9}
+.flow.rev{animation-direction:reverse}
+@keyframes dash{to{stroke-dashoffset:-24}}
+.el{font-size:10.5px;fill:var(--fg2)}
+.infobox{margin-top:16px;display:grid;grid-template-columns:auto 1fr;gap:6px 24px;min-height:120px}
+.infobox h3{grid-column:1/-1;margin:0;color:var(--green)}
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin:0 0 12px;font-size:12.5px;color:var(--fg2)}
+.legend i{display:inline-block;width:22px;height:0;border-top:2px dashed var(--green);vertical-align:middle;margin-inline-end:6px}
+
+/* hardware */
+.hw{display:flex;flex-direction:column;overflow:hidden;padding:0}
+.hw .ph{aspect-ratio:16/10;background:#05090c;position:relative;display:grid;place-items:center;overflow:hidden}
+.hw .ph img{width:100%;height:100%;object-fit:cover}
+.hw .ph.miss{background:repeating-linear-gradient(45deg,#0c1419,#0c1419 10px,#0f1a21 10px,#0f1a21 20px);color:var(--fg3);font:500 11.5px var(--f-mono);text-align:center;padding:16px;border-bottom:1px dashed #2c4654}
+.hw .bd{padding:18px 20px 22px}
+.hw .id{font:500 11px var(--f-mono);color:var(--green);letter-spacing:.1em}
+.hw h3{margin:2px 0 4px}
+.hw .role{color:var(--fg);font-size:14.5px;margin-bottom:10px}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:start;padding:11px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 11.5px var(--f-mono);letter-spacing:.1em;color:var(--fg3);text-transform:uppercase;background:#0c151b}
+td:first-child{color:var(--fg2)}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--bg2)}
+.tblwrap table{min-width:420px}
+.sub-h{font:600 13px var(--f-mono);letter-spacing:.14em;color:var(--cyan);text-transform:uppercase;margin:44px 0 16px}
+html[lang=ar] .sub-h{letter-spacing:.04em}
+
+/* flow steps */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px;counter-reset:st}
+.steps li{list-style:none;counter-increment:st;background:var(--bg3);border:1px solid var(--line);border-radius:8px;padding:16px 16px 18px;font-size:14px;color:var(--fg2);position:relative}
+.steps li::before{content:counter(st,decimal-leading-zero);display:block;font:600 12px var(--f-mono);color:var(--green);margin-bottom:6px}
+.steps{padding:0;margin:0}
+.layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px}
+.layer{border:1px solid var(--line);border-radius:8px;padding:18px;background:var(--bg2)}
+.layer h3{font-size:15px;color:var(--cyan);font-family:var(--f-mono);letter-spacing:.1em;text-transform:uppercase}
+html[lang=ar] .layer h3{font-family:var(--f-body);letter-spacing:0}
+
+/* keys */
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.key{display:flex;align-items:center;gap:12px;background:var(--bg3);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13.5px;color:var(--fg2)}
+.key kbd{font:700 17px var(--f-mono);min-width:38px;height:38px;display:grid;place-items:center;border-radius:6px;background:#0a1117;border:1px solid #3a5868;border-bottom-width:3px;color:var(--fg)}
+.escape{display:flex;gap:4px;height:46px;margin:18px 0 8px;direction:ltr}
+.escape div{display:grid;place-items:center;font:500 11px var(--f-mono);border-radius:5px;padding:0 8px;white-space:nowrap}
+.esc1{flex:5;background:#19b6c826;border:1px solid #19b6c866}
+.esc2{flex:5;background:#e8b04b22;border:1px solid #e8b04b66}
+.esc3{flex:4;background:#00b86b22;border:1px solid #00b86b66}
+.gmodes .card{position:relative}
+.gmodes .real{border-color:#e8b04b66}
+.gmodes .sim{border-color:#19b6c866}
+
+/* LED sim */
+.ledsim{display:grid;grid-template-columns:minmax(0,260px) 1fr;gap:28px;align-items:center}
+.ledboat{position:relative;width:100%;max-width:240px;aspect-ratio:.52;margin:auto}
+.ledboat img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:14px;opacity:.9}
+.led{position:absolute;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:#3a1010;border:1px solid #6a2a2a;transition:.05s}
+.led.on{background:#ff3b3b;box-shadow:0 0 14px 4px #ff3b3b99;border-color:#ff9a9a}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btns button{background:var(--bg3);border:1px solid #3a5868;border-radius:6px;padding:10px 18px;font:600 13px var(--f-mono)}
+.btns button:hover{border-color:var(--green)}
+
+/* innovation */
+.inno{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));margin-top:30px}
+.inno .card .n{font:700 38px/1 var(--f-disp);color:var(--green);opacity:.5;margin-bottom:12px}
+
+/* gallery */
+.gal{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.gi{position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:#05090c;cursor:zoom-in;aspect-ratio:4/5;padding:0;display:block;width:100%}
+.gi img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.gi:hover img{transform:scale(1.04)}
+.gi span{position:absolute;inset-inline:0;bottom:0;padding:26px 14px 12px;background:linear-gradient(transparent,#000d);font:600 13px var(--f-disp);text-align:start}
+.gi.miss{cursor:default;background:repeating-linear-gradient(45deg,#0c1419,#0c1419 10px,#0f1a21 10px,#0f1a21 20px);display:grid;place-items:center;text-align:center;border-style:dashed;color:var(--fg3);padding:18px}
+.gi.miss b{display:block;color:var(--fg2);font:600 14px var(--f-disp);margin-bottom:6px}
+.gi.miss code{font:500 12px var(--f-mono);color:var(--cyan)}
+.lb{position:fixed;inset:0;z-index:90;background:#04070bf2;display:grid;place-items:center;padding:20px}
+.lb[hidden]{display:none}
+.lb img{max-height:88vh;max-width:94vw;object-fit:contain;border-radius:6px}
+.lb button{position:absolute;top:16px;inset-inline-end:16px}
+
+/* roadmap */
+.road{display:grid;gap:0;position:relative;margin-top:10px}
+.road .it{display:grid;grid-template-columns:44px 1fr;gap:16px;padding-bottom:26px;position:relative}
+.road .it::before{content:"";position:absolute;inset-inline-start:21px;top:36px;bottom:0;width:1px;background:linear-gradient(var(--cyan),transparent)}
+.road .it:last-child::before{display:none}
+.road .dot{width:44px;height:44px;border-radius:50%;border:1.5px dashed var(--cyan);display:grid;place-items:center;font:600 12px var(--f-mono);color:var(--cyan);background:var(--bg)}
+.road h3{margin-bottom:4px}
+.road p{color:var(--fg2);margin:0;font-size:14.5px}
+
+/* team */
+.team{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}
+.mem{text-align:center;padding:28px 22px}
+.av{width:132px;height:132px;border-radius:50%;margin:0 auto 18px;display:grid;place-items:center;border:1px dashed #3a5868;background:radial-gradient(circle at 30% 30%,#14343a,#0b161c);font:700 34px var(--f-disp);color:var(--green);letter-spacing:.06em}
+.mem h3{margin-bottom:2px}
+.mem .role{color:var(--green);font:500 12px var(--f-mono);letter-spacing:.14em;text-transform:uppercase}
+html[lang=ar] .mem .role{letter-spacing:0}
+.mem .ph-note{margin-top:12px;font:500 11px var(--f-mono);color:var(--fg3)}
+
+/* footer */
+footer{border-top:1px solid var(--line);padding:56px var(--gut) 40px;text-align:center;background:#060a0e}
+footer img{width:84px;margin:0 auto 14px}
+footer h4{font:800 28px var(--f-disp);letter-spacing:.2em;margin:0 0 4px}
+footer p{color:var(--fg2);margin:0 0 6px}
+footer .dd{font:500 12px var(--f-mono);letter-spacing:.3em;color:var(--green);margin:14px 0 24px}
+footer nav{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 24px}
+footer nav a{color:var(--fg2);text-decoration:none;font-size:14px}
+footer nav a:hover{color:var(--fg)}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:80;background:#04070bdd;backdrop-filter:blur(6px);display:grid;place-items:center;padding:16px}
+.modal[hidden]{display:none}
+.mbox{position:relative;width:min(760px,100%);max-height:92vh;overflow:auto;background:var(--bg2);border:1px solid #2c4654;border-radius:12px;display:grid;grid-template-columns:minmax(0,260px) 1fr}
+.mbox .mi{background:#05090c;min-height:220px}
+.mbox .mi img{width:100%;height:100%;object-fit:cover}
+.mbox .mt{padding:26px 26px 28px}
+.mbox h3{font-size:22px}
+.mbox .x{position:absolute;top:10px;inset-inline-end:10px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#0b141a;display:grid;place-items:center;padding:0}
+
+.reveal.pre{opacity:0;transform:translateY(26px)}
+.reveal{transition:opacity .8s ease,transform .8s ease}
+
+@media (max-width:979px){
+  .track{height:430vh}
+  .hero-copy{inset-inline:var(--gut);width:auto;top:calc(var(--hdr) + 14px);transform:none;text-align:start}
+  .hero-logo{width:60px;margin-bottom:8px;display:none}
+  .hero-copy h1{font-size:clamp(46px,15vw,72px)}
+  .hero-copy .sub{margin:10px 0 4px;font-size:13px}
+  .hero-copy .tagline{font-size:17px;margin:0}
+  .hero-copy .desc,.chips,.cta{display:none}
+  .tile{display:none}
+  .parts-mobile{display:grid;gap:12px;padding:56px var(--gut) 20px;max-width:760px;margin-inline:auto}
+  .parts-mobile h2{font-size:28px}
+  .pm{display:grid;grid-template-columns:104px 1fr;gap:14px;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:12px;text-align:start;width:100%}
+  .pm img{width:104px;height:104px;object-fit:cover;border-radius:5px}
+  .pm b{display:block;font:700 15px var(--f-disp)}
+  html[lang=ar] .pm b{font-family:var(--f-body)}
+  .pm p{margin:2px 0 0;font-size:13px;color:var(--fg2);line-height:1.5}
+  .pm .no{font:600 11px var(--f-mono);color:var(--cyan)}
+  .mbox{grid-template-columns:1fr}
+  .mbox .mi{max-height:200px}
+  .ledsim{grid-template-columns:1fr}
+  .caption{font-size:12px;padding:7px 14px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .flow,.cue::after,.spot::after{animation:none}
+  .reveal{transition:none}
+}
+.hw .ph img[src*="r3d-top"]{object-fit:contain;padding:10px}
+
+#gl{position:absolute;inset:0;width:100%;height:100%;z-index:2;display:none}
+
+.ledboat{overflow:visible}
+.ledboat .shard,.ledboat .flash{position:absolute;inset:0;pointer-events:none;border-radius:14px}
+.ledboat .shard{background-size:100% 100%}
+.ledboat .flash{background:radial-gradient(circle at 50% 50%,#fff,#ffd98a 40%,transparent 75%);mix-blend-mode:screen;z-index:5;transform:scale(2.6)}
+.ledboat .fxc{position:absolute;left:-100%;top:-30%;width:300%;height:160%;pointer-events:none;z-index:4}
+.ledboat.shake{animation:shk .09s linear 7}
+@keyframes shk{0%{transform:translate(0,0)}25%{transform:translate(-4px,3px)}50%{transform:translate(3px,-3px)}75%{transform:translate(-3px,-2px)}100%{transform:translate(0,0)}}
+.btns .boom{background:#2a0f0f;border-color:#ff5a3c;color:#ffb4a0}
+.btns .boom:hover:not(:disabled){background:#ff5a3c;color:#fff}
+.btns button:disabled{opacity:.5;cursor:default}
+@media (prefers-reduced-motion:reduce){.ledboat.shake{animation:none}}
+
+footer .since{margin:10px 0 0;font-size:13px;color:var(--fg3);letter-spacing:.02em}
+img[src*="bom-"]{object-fit:contain!important;background:#fff!important;padding:6px}
+.hw .ph img[src*="bom-"]{padding:14px}
+
+/* --- v7 additions --- */
+img[src*="comp-boat"],img[src*="comp-router"]{object-fit:contain!important;background:#fff!important;padding:6px}
+.hw .ph img[src*="comp-boat"],.hw .ph img[src*="comp-router"]{padding:14px}
+.hw .ph img[src*="comp-battery"],.tile img[src*="comp-battery"],.pm img[src*="comp-battery"],.mi img[src*="comp-battery"]{object-fit:cover;background:#05090c}
+.gi.shot{aspect-ratio:903/682;max-width:760px}
+.gi.shot span{font-size:12.5px}
+.av{width:140px;height:140px;overflow:hidden;border:2px solid #0B5142;background:#0b161c;padding:0;box-shadow:0 0 0 4px #0b161c,0 0 0 5px #22343f}
+.av img{width:100%;height:100%;object-fit:cover;object-position:center 18%;border-radius:50%;display:block}
+.mem-contact{margin-top:16px;padding:9px 24px;font-size:13px}
+/* quick contact */
+#contact .cwrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:clamp(24px,5vw,64px);align-items:start}
+#contact .cside p{color:var(--fg2);font-size:15px}
+#contact .cside ul{margin-top:18px}
+#cform{display:grid;gap:18px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:clamp(18px,3vw,30px)}
+#cform .field{display:grid;gap:6px;min-width:0}
+#cform label{font:600 13px var(--f-disp);letter-spacing:.02em}
+html[lang=ar] #cform label{font-family:var(--f-body)}
+#cform label i{color:var(--green);font-style:normal;margin-inline-start:4px}
+#cform input[type=text],#cform input[type=email],#cform textarea{width:100%;background:#0a1117;color:var(--fg);border:1px solid #2c4654;border-radius:6px;padding:12px 14px;font:400 15px var(--f-body);transition:border-color .15s,box-shadow .15s}
+#cform textarea{min-height:140px;resize:vertical;line-height:1.6}
+#cform input:focus,#cform textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px #00b86b30}
+#cform .bad{border-color:#e5584a!important;box-shadow:0 0 0 3px #e5584a22}
+#cform .ok{border-color:#00b86b88}
+#cform .err{min-height:1.2em;font:500 12.5px var(--f-body);color:#ff9a8f}
+#cform .hint{font:500 11.5px var(--f-mono);color:var(--fg3);direction:ltr;text-align:start}
+#cform .count{font:500 11.5px var(--f-mono);color:var(--fg3);text-align:end}
+#cform .hp{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
+#cform .send{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+#cform .send .btn{border:0;min-width:150px;justify-content:center}
+#cform .send .btn[disabled]{opacity:.55;cursor:progress}
+#cstatus{font:500 14px var(--f-body);margin:0;min-height:1.4em}
+#cstatus.good{color:#4ee0a0}#cstatus.fail{color:#ff9a8f}
+@media (max-width:860px){#contact .cwrap{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+
+
+<header class="top">
+  <a class="brand" href="#home"><img src="img/logo.png" alt="SHALFA">SHALFA</a>
+  <span class="sp"></span>
+  <button class="pill" id="langBtn" type="button">English</button>
+  <button class="pill" id="menuBtn" type="button" aria-label="Menu">☰</button>
+</header>
+<nav class="menu" id="menu" hidden></nav>
+<main>
+<section class="journey" id="home">
+ <div class="track">
+  <div class="stick">
+   <canvas id="water"></canvas><canvas id="gl"></canvas>
+   <div class="vignette"></div>
+   <div class="hero-copy">
+    <img class="hero-logo" src="img/logo.png" alt="">
+    <h1>SHALFA <span class="ar">شَلْفَا</span></h1>
+    <p class="sub"><span class="ar">نموذج أولي لقارب سطحي غير مأهول</span><span class="en">Unmanned Surface Vehicle Prototype</span></p>
+    <p class="tagline"><span class="ar">هندسة أنظمة بحرية ذكية</span><span class="en">Engineering Intelligent Maritime Systems</span></p>
+    <p class="desc"><span class="ar">شلفا نموذج أولي عامل لقارب سطحي غير مأهول، بُني بدمج التحكم المدمج والرؤية الحاسوبية والمراقبة الحرارية والوصول إلى GPS ومحاكاة المهمة الآمنة في منصة قارب تحكم عن بُعد تقليدية.</span><span class="en">SHALFA is a functional unmanned surface vessel prototype developed by integrating embedded control, computer vision, thermal monitoring, GPS access, and safe mission simulation into a conventional RC marine platform.</span></p>
+    <div class="cta"><a class="btn" href="#about"><span class="ar">استكشف المشروع</span><span class="en">Explore the Project</span></a><a class="btn ghost" href="#architecture"><span class="ar">معمارية النظام</span><span class="en">View System Architecture</span></a></div>
+    <div class="chips"><span>Raspberry Pi 4</span><span>MLX90640</span><span>NEO-8M</span><span>L298N</span><span>Arduino Nano</span><span>YOLOv5n</span></div>
+   </div>
+   <div class="boat" id="boat">
+    <img class="hull" src="img/r3d-inside.png" alt="">
+    <div class="scan"></div>
+    <img class="lid" src="img/r3d-top.png" alt="SHALFA">
+   </div>
+   <div id="spots"></div>
+   <svg id="leaders"></svg>
+   <div id="tiles"></div>
+   <div class="caption" id="cap"></div>
+   <div class="cue"><span class="ar">اسحب لفتح القارب</span><span class="en">SCROLL TO OPEN THE BOAT</span></div>
+   <div class="prog"><i></i></div>
+  </div>
+ </div>
+ <div class="parts-mobile" id="partsM"></div>
+</section>
+<div id="sections"></div>
+<section class="s" id="contact">
+ <p class="eyebrow"><span class="ar">١١ · التواصل</span><span class="en">11 · Contact</span></p>
+ <h2><span class="ar">تواصل سريع</span><span class="en">Quick Contact</span></h2>
+ <div class="cwrap">
+  <div class="cside">
+   <p><span class="ar">اكتب اسمك وبريدك ورسالتك، وتصل مباشرة إلى فريق شلفا. كل الحقول مطلوبة، وتصلك نسخة من رسالتك على بريدك بعد الإرسال.</span><span class="en">Enter your name, email and message and it goes straight to the SHALFA team. Every field is required, and you receive a copy of your message by email after sending.</span></p>
+   <ul class="dots">
+    <li><span class="ar">يُقبل البريد من مزودين معتمدين فقط: Gmail وiCloud وOutlook وHotmail وYahoo وProton وغيرها من المزودين المعروفين.</span><span class="en">Only trusted email providers are accepted: Gmail, iCloud, Outlook, Hotmail, Yahoo, Proton and other well-known providers.</span></li>
+    <li><span class="ar">لا تُرسل الرسائل الفارغة أو العشوائية.</span><span class="en">Empty or random text cannot be sent.</span></li>
+   </ul>
+  </div>
+  <form id="cform" novalidate>
+   <div class="field"><label for="cf-name"><span class="ar">الاسم</span><span class="en">Name</span><i>*</i></label><input id="cf-name" name="name" type="text" required maxlength="60" autocomplete="name"><small class="err" id="cf-name-e"></small></div>
+   <div class="field"><label for="cf-email"><span class="ar">البريد الإلكتروني</span><span class="en">Email</span><i>*</i></label><input id="cf-email" name="email" type="email" required maxlength="120" autocomplete="email" inputmode="email" dir="ltr" placeholder="name@gmail.com"><small class="err" id="cf-email-e"></small></div>
+   <div class="field"><label for="cf-msg"><span class="ar">الرسالة</span><span class="en">Message</span><i>*</i></label><textarea id="cf-msg" name="message" required maxlength="1000"></textarea><div class="count" id="cf-count">0 / 1000</div><small class="err" id="cf-msg-e"></small></div>
+   <input class="hp" type="text" id="cf-web" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+   <div class="send"><button class="btn" type="submit" id="cf-send"><span class="ar">إرسال الرسالة</span><span class="en">Send message</span></button><p id="cstatus" role="status" aria-live="polite"></p></div>
+  </form>
+ </div>
+</section>
+
+</main>
+<footer>
+ <img src="img/logo.png" alt="">
+ <h4>SHALFA</h4>
+ <p><span class="ar">نموذج أولي لقارب سطحي غير مأهول</span><span class="en">Unmanned Surface Vehicle Prototype</span></p>
+ <div class="dd"><span class="ar">صُمّم • طُوّر • اختُبر</span><span class="en">Designed • Developed • Tested</span></div>
+ <p class="since"><span class="ar">بدأ المشروع وأُنشئ في عام 2025</span><span class="en">Project started and created in 2025</span></p>
+ <nav><a href="#about"><span class="ar">عن شلفا</span><span class="en">About</span></a><a href="#architecture"><span class="ar">المعمارية</span><span class="en">Architecture</span></a><a href="#innovation"><span class="ar">الابتكارات</span><span class="en">Innovations</span></a><a href="#results"><span class="ar">النتائج</span><span class="en">Results</span></a><a href="#team"><span class="ar">الفريق</span><span class="en">Team</span></a><a href="#contact"><span class="ar">تواصل</span><span class="en">Contact</span></a></nav>
+</footer>
+<div class="modal" id="modal" hidden><div class="mbox"><button class="x" id="mx" type="button" aria-label="Close">✕</button><div id="mbody" style="display:contents"></div></div></div>
+<div class="lb" id="lb" hidden><button class="pill" id="lbx" type="button">✕</button><img alt=""></div>
+<script>
+/* ---------- content (verified facts only, from the project brief) ---------- */
+const T=(a,e)=>`<span class="ar">${a}</span><span class="en">${e}</span>`;
+const TS=(a,e)=>`<tspan class="ar">${a}</tspan><tspan class="en">${e}</tspan>`;
+const UL=l=>`<ul class="dots">${l.map(x=>`<li>${T(x[0],x[1])}</li>`).join('')}</ul>`;
+
+const PARTS=[
+{id:'pi',img:'bom-pi.png',side:'L',o:[[.499,.56]],
+ ar:'Raspberry Pi 4 Model B',en:'Raspberry Pi 4 Model B',
+ fa:'الحاسب الرئيسي المدمج: يشغّل خادم المحركات والواجهة والبث، ويتصل بـ GPS والحساس الحراري والأردوينو.',
+ fe:'Main embedded computer: runs the motor server, web console and streaming, and talks to the GPS, thermal sensor and Arduino.',
+ s:[['الإصدار 1.5','Revision 1.5'],['Raspberry Pi OS Bookworm بنظام 64-bit','Raspberry Pi OS Bookworm, 64-bit'],['Python 3.11.2 (حسب التوثيق)','Python 3.11.2 (documented)'],['يستضيف واجهة الويب وخدمات البث','Hosts the web interface and streaming services'],['يستقبل أوامر التحكم بالمحركات','Receives motor-control commands'],['يتصل بـ GPS والحساس الحراري وArduino Nano','Interfaces with GPS, thermal sensing and the Arduino Nano']],
+ n:['استدلال YOLOv5 يعمل على لابتوب منفصل، وليس على الـ Pi.','YOLOv5 inference runs on a separate laptop, not on the Pi.']},
+{id:'cam',img:'bom-cam.png',side:'L',o:[[.5,.04]],deck:1,
+ ar:'الكاميرا والحساس الحراري',en:'Camera & Thermal Sensor',
+ fa:'كاميرا Raspberry Pi تبثّ فيديو MJPEG مباشراً، وحساس MLX90640 يعرض خريطة حرارية للمراقبة فقط.',
+ fe:'A Raspberry Pi Camera streams live MJPEG video; the MLX90640 shows a thermal map for monitoring only.',
+ s:[['الكاميرا: Raspberry Pi Camera عبر Picamera2','Camera: Raspberry Pi Camera via Picamera2'],['بث مباشر MJPEG على /stream.mjpg (المنفذ 8080)','Live MJPEG on /stream.mjpg (port 8080)'],['تزوّد عميل YOLOv5 الخارجي بالإطارات','Supplies frames to the external YOLOv5 client'],['الحساس: MLX90640، مصفوفة 24 × 32، اتصال I²C','Sensor: MLX90640, 24 × 32 array, I²C'],['عرض حراري ملوّن بدقة 320 × 240 على /thermal.mjpg','Colour-mapped 320 × 240 view on /thermal.mjpg']],
+ n:['الصورة الحرارية للمراقبة والعرض فقط، ولا تُعالَج بـ YOLOv5.','Thermal imagery is for monitoring and visualization only. It is not processed by YOLOv5.']},
+{id:'gps',img:'bom-gps.png',side:'L',o:[[.19,.476]],
+ ar:'وحدة GPS من نوع NEO-8M',en:'NEO-8M GPS Module',
+ fa:'تعطي إحداثيات القارب عبر خدمة GPS محمية، وتدعم وضعاً حقيقياً وآخر محاكى للعرض.',
+ fe:'Provides boat coordinates through a protected GPS service, with a real mode and a simulated mode for demos.',
+ s:[['اتصال UART تسلسلي، 9600 baud','UART serial, 9600 baud'],['مسار الجهاز: /dev/serial0','Device path: /dev/serial0'],['مرتبطة بخدمة التحكم بالوصول إلى GPS','Integrated with a GPS access-control service'],['تدعم بيانات حقيقية ومحاكاة','Supports real and simulated GPS data']],
+  n:null},
+{id:'l298n',img:'bom-l298n.png',side:'L',o:[[.527,.789]],
+ ar:'مشغّل المحركات L298N',en:'L298N Motor Driver',
+ fa:'قنطرة H مزدوجة تحوّل إشارات GPIO من الـ Pi إلى طاقة تشغّل المحركين في الاتجاهين.',
+ fe:'Dual H-bridge that turns Raspberry Pi GPIO signals into drive power for both motors, in both directions.',
+ s:[['يتحكم بمحركين DC بفرش','Controls two brushed DC motors'],['تشغيل ثنائي الاتجاه لكل محرك','Bidirectional operation'],['يستقبل إشارات GPIO من Raspberry Pi','Receives GPIO signals from the Raspberry Pi'],['يُستخدم للتوجيه التفاضلي','Used for differential steering']],
+ n:null},
+{id:'motor',img:'p3d-motor.png',side:'L',o:[[.326,.704],[.696,.677]],
+ ar:'محركان DC للدفع',en:'Twin Brushed DC Motors',
+ fa:'محركان يدفعان القارب. التوجيه يتم بالفرق في تشغيل المحركين، لا بدفة.',
+ fe:'Two motors propel the boat. Steering comes from driving them differently, not from a rudder.',
+ s:[['محركان DC بفرش','Two brushed DC motors'],['OUT1 / OUT2: المحرك الأيمن','OUT1 / OUT2: right motor'],['OUT3 / OUT4: المحرك الأيسر','OUT3 / OUT4: left motor'],['توجيه تفاضلي','Differential steering']],
+ n:null},
+{id:'battery',img:'comp-battery.jpg',side:'R',o:[[.477,.372]],
+ ar:'بطارية 7.4V',en:'7.4V Battery',
+ fa:'مصدر الطاقة المستقل لمشغّل المحركات ونظام الدفع.',
+ fe:'The separate power source for the motor driver and the propulsion system.',
+ s:[['تغذّي L298N والمحركات','Supplies the L298N and propulsion motors'],['منفصلة عن مصدر طاقة الـ Pi','Separate from the Raspberry Pi supply']]},
+{id:'power',img:'bom-power.png',side:'R',o:[[.483,.213]],
+ ar:'باور بانك USB',en:'USB Power Bank',
+ fa:'يغذّي الـ Raspberry Pi، فتبقى الإلكترونيات شغّالة مستقلة عن بطارية الدفع.',
+ fe:'Powers the Raspberry Pi, keeping the electronics independent from the propulsion battery.',
+ s:[['يغذّي Raspberry Pi','Powers the Raspberry Pi'],['مصدر منفصل عن بطارية 7.4V','Separate from the 7.4V battery']],
+ n:['لم تُقَس السعة أو الكفاءة.','Capacity and efficiency have not been measured.']},
+{id:'router',img:'comp-router.png',side:'R',o:[[.5,.93]],deck:1,
+ ar:'راوتر والشبكة',en:'Router & Network',
+ fa:'يربط الأجهزة بالشبكة، فيتواصل الـ Pi مع لابتوب التحكم والمعالجة.',
+ fe:'Connects the devices on the network so the Pi can talk to the control and processing laptop.',
+ s:[['راوتر / شبكة Ethernet','Router / Ethernet network'],['يربط الأجهزة المتصلة بالشبكة','Connects the networked devices'],['يدعم الاتصال بين Raspberry Pi واللابتوب الخارجي','Supports communication between the Raspberry Pi and the external laptop']],
+ n:null}
+];
+const byId=Object.fromEntries(PARTS.map(p=>[p.id,p]));
+
+/* hardware section: 11 documented components */
+const HWL=[
+ {k:'pi',img:'bom-pi.png',a:'الوحدة الحاسوبية الرئيسية',e:'Main Computing Unit',p:'pi'},
+ {k:'fly',img:'comp-boat.jpg',a:'المنصة البحرية',e:'Marine Platform',an:'هيكل شلفا البحري',en:'SHALFA Marine Hull',
+  fa:'هيكل قارب شلفا، مُجهّز للتحكم المدمج والاستشعار.',fe:'The SHALFA boat hull, equipped for embedded control and sensing.',
+  s:[['محركان DC بفرش','Twin brushed DC motors'],['توجيه تفاضلي بالتحكم في المحركين','Differential steering by controlling the two motors']]},
+ {k:'cam',img:'bom-cam.png',a:'الكاميرا الرئيسية',e:'Main Camera',an:'Raspberry Pi Camera',en:'Raspberry Pi Camera',
+  fa:'تلتقط المشهد وتبثّه فيديو حياً. لم يُوثّق طراز أو دقة الكاميرا.',fe:'Captures the scene and streams it live. Camera model and resolution are not documented.',
+  s:[['متصلة بـ Raspberry Pi','Connected to the Raspberry Pi'],['تعمل عبر Picamera2','Operated through Picamera2'],['بث MJPEG على /stream.mjpg','MJPEG at /stream.mjpg'],['خادم الويب على المنفذ 8080','Web server on port 8080'],['تزوّد عميل YOLOv5 الخارجي بالإطارات','Feeds the external YOLOv5 client']]},
+ {k:'thm',img:'bom-thm.png',a:'الحساس الحراري',e:'Thermal Sensor',an:'MLX90640 Thermal Infrared Sensor',en:'MLX90640 Thermal Infrared Sensor',
+  fa:'يعرض معلومات حرارية عبر بث ويب مخصص، للمراقبة والعرض.',fe:'Shows thermal information through a dedicated web stream, for monitoring and visualization.',
+  s:[['مصفوفة 24 × 32 بكسل','24 × 32 pixel array'],['اتصال I²C (SDA وSCL)','I²C (SDA and SCL)'],['إخراج 320 × 240 بخريطة ألوان','320 × 240 colour-mapped output'],['البث على /thermal.mjpg','Stream at /thermal.mjpg'],['لا تُعالَج بـ YOLOv5','Not processed by YOLOv5']],
+  note:['يظهر على حامل الكاميرا في المقدمة. صورة منفصلة له مطلوبة.','Visible on the bow camera mount. A dedicated photo is needed.']},
+ {k:'gps',img:'bom-gps.png',a:'وحدة GPS',e:'GPS Module',p:'gps'},
+ {k:'drv',img:'bom-l298n.png',a:'مشغّل المحركات',e:'Motor Driver',p:'l298n'},
+ {k:'ard',img:'bom-nano.png',a:'متحكم Arduino',e:'Arduino Nano',an:'Arduino Nano',en:'Arduino Nano',
+  fa:'يتحكم بمؤشرات LED الخاصة بمحاكاة المهمة.',fe:'Controls the LED indicators of the mission simulation.',
+  s:[['اتصال USB تسلسلي بالـ Pi، 9600 baud','USB serial to the Pi, 9600 baud'],['المسار الموثّق: /dev/ttyUSB0','Documented path: /dev/ttyUSB0'],['D3: مؤشرات الجهة اليمنى','D3: right-side LEDs'],['D4: مؤشرات الجهة اليسرى','D4: left-side LEDs']]},
+ {k:'pwr',img:'comp-battery.jpg',a:'نظام الطاقة',e:'Power System',an:'7.4V Battery + USB Power Bank',en:'7.4V Battery + USB Power Bank',
+  fa:'مصدران منفصلان: واحد للدفع وواحد للحاسب.',fe:'Two separate sources: one for propulsion, one for the computer.',
+  s:[['بطارية 7.4V: تغذّي مشغّل المحركات والدفع','7.4V battery: motor driver and propulsion'],['باور بانك USB: يغذّي Raspberry Pi','USB power bank: Raspberry Pi']]},
+ {k:'spk',img:'bom-spk.png',a:'سماعة بلوتوث',e:'Bluetooth Speaker',an:'Bluetooth Speaker',en:'Bluetooth Speaker',
+  fa:'تعطي مؤثرات صوتية لأحداث المهمة في المحاكاة الآمنة.',fe:'Provides audio feedback for mission events in the safe simulation.',s:[['مؤثرات صوتية فقط','Audio effects only']]},
+ {k:'rt',img:'comp-router.png',a:'شبكة الاتصال',e:'Communication Network',p:'router'},
+ {k:'led',img:'bom-led.png',a:'مؤشرات المحاكاة',e:'Simulation LEDs',an:'4 LED indicators',en:'4 LED indicators',
+  fa:'مؤشران على كل جهة، يتحكم بهما الأردوينو لتمثيل أحداث المهمة بصرياً.',fe:'Two indicators on each side, driven by the Arduino to show mission events visually.',
+  s:[['مؤشران على اليمين ومؤشران على اليسار','Two on the right, two on the left'],['يُتحكم بها عبر Arduino Nano','Controlled through the Arduino Nano']]}
+];
+
+/* architecture diagram */
+const NODES=[
+{id:'cam',x:40,y:90,w:170,h:56,a:'الكاميرا',e:'Pi Camera',s:'Picamera2 · MJPEG',
+ d:['كاميرا Raspberry Pi تعمل عبر Picamera2 وتبثّ MJPEG على /stream.mjpg (المنفذ 8080). تزوّد عميل YOLOv5 الخارجي بالإطارات.','A Raspberry Pi Camera operated through Picamera2, streaming MJPEG at /stream.mjpg (port 8080). It supplies frames to the external YOLOv5 client.']},
+{id:'thm',x:40,y:190,w:170,h:56,a:'الحساس الحراري',e:'MLX90640',s:'24×32 · I²C',
+ d:['حساس حراري بمصفوفة 24 × 32 عبر I²C، يُعرض بدقة 320 × 240 بخريطة ألوان على /thermal.mjpg. للمراقبة والعرض فقط ولا يدخل في كشف YOLOv5.','A 24 × 32 thermal array over I²C, shown at 320 × 240 with a colour map at /thermal.mjpg. For monitoring and display only. It does not feed YOLOv5 detection.']},
+{id:'gps',x:40,y:290,w:170,h:56,a:'وحدة GPS',e:'NEO-8M GPS',s:'UART · 9600',
+ d:['NEO-8M عبر UART على /dev/serial0 بسرعة 9600. تستخدمها خدمة GPS.','NEO-8M over UART at /dev/serial0, 9600 baud, used by the GPS service.']},
+{id:'rt',x:40,y:410,w:170,h:56,a:'راوتر',e:'Router',s:'LOCAL NETWORK',
+ d:['يربط الـ Raspberry Pi باللابتوب الخارجي عبر الشبكة المحلية.','Connects the Raspberry Pi to the external laptop over the local network.']},
+{id:'pi',x:290,y:170,w:190,h:150,a:'Raspberry Pi 4',e:'Raspberry Pi 4',s:'',
+ d:['الحاسب المدمج على القارب. يشغّل خادم المحركات motor_server.py (UDP 5005)، وواجهة المراقبة (HTTP 8080)، وخدمة GPS (HTTP 8088)، ويتواصل مع Arduino Nano عبر USB.','The onboard computer. Runs the motor server motor_server.py (UDP 5005), the monitoring interface (HTTP 8080) and the GPS service (HTTP 8088), and talks to the Arduino Nano over USB serial.']},
+{id:'web',x:290,y:380,w:90,h:56,a:'الواجهة',e:'Web',s:':8080',
+ d:['واجهة مراقبة موحّدة: / و /stream.mjpg و /thermal.mjpg و /health و /status. تجمع الكاميرا والعرض الحراري ومعلومات GPS وحالة النظام.','A unified monitoring interface: /, /stream.mjpg, /thermal.mjpg, /health and /status. It combines camera, thermal view, GPS information and system status.']},
+{id:'gpss',x:390,y:380,w:90,h:56,a:'خدمة GPS',e:'GPS svc',s:':8088',
+ d:['خدمة وصول إلى GPS: /gps و /gps?key=KEY و /status. تدعم تغذية محاكاة ووضع GPS حقيقياً محمياً بمفتاح.','A GPS access service: /gps, /gps?key=KEY and /status. It supports a simulated feed and a key-protected real-GPS mode.']},
+{id:'l298',x:520,y:70,w:150,h:56,a:'مشغّل L298N',e:'L298N Driver',s:'H-BRIDGE',
+ d:['قنطرة H مزدوجة تستقبل إشارات الاتجاه والسرعة من Raspberry Pi وتشغّل المحركين.','A dual H-bridge that receives direction and speed signals from the Raspberry Pi and drives the two motors.']},
+{id:'mot',x:520,y:150,w:150,h:56,a:'محركا DC',e:'Twin DC Motors',s:'DIFFERENTIAL',
+ d:['محركان DC بفرش. OUT1/OUT2 للمحرك الأيمن وOUT3/OUT4 للأيسر. التوجيه تفاضلي.','Two brushed DC motors. OUT1/OUT2 drive the right motor, OUT3/OUT4 the left. Steering is differential.']},
+{id:'ard',x:520,y:300,w:150,h:56,a:'Arduino Nano',e:'Arduino Nano',s:'USB SERIAL · D3/D4',
+ d:['متصل بالـ Pi عبر USB تسلسلي (9600، /dev/ttyUSB0). يستقبل الأمرين R وL ويشغّل أنماط LED: خمس وميضات قصيرة ثم وميض أطول.','Connected to the Pi over USB serial (9600, /dev/ttyUSB0). It receives the commands R and L and runs LED patterns: five short flashes then one longer flash.']},
+{id:'led',x:520,y:400,w:150,h:56,a:'LED + سماعة',e:'LEDs + Speaker',s:'SAFE SIMULATION',
+ d:['مؤشرات LED وسماعة بلوتوث لمحاكاة أحداث المهمة. لا توجد أسلحة أو متفجرات.','LED indicators and a Bluetooth speaker simulate mission events. No weapons or explosives.']},
+{id:'yolo',x:750,y:200,w:216,h:66,lap:1,a:'YOLOv5n',e:'YOLOv5n',s:'yolov5n.pt · imgsz 320',
+ d:['كشف الأجسام بنموذج YOLOv5n على لابتوب خارجي: فئتا Person (0) وBoat (9). الثقة 0.5 وIoU 0.25.','Object detection with YOLOv5n on an external laptop: classes Person (0) and Boat (9). Confidence 0.5, IoU 0.25.']},
+{id:'aln',x:750,y:330,w:216,h:66,lap:1,a:'محاذاة الهدف',e:'Target Alignment',s:'deadband 0.12 → UDP',
+ d:['يقارن موضع الهدف الأفقي بمنطقة ميتة 0.12 وعتبة المسافة 0.18 (أقصى عمر للإطار 0.8 ثانية)، ثم يرسل أوامر الحركة عبر UDP إلى المنفذ 5005.','Compares the target\'s horizontal position against a 0.12 deadband and a 0.18 distance threshold (maximum frame age 0.8 s), then sends movement commands over UDP to port 5005.']}
+];
+const EDGES=[
+ ['M210 118 H250 V195 H290','',0],['M210 218 H250 V225 H290','th',0],['M210 318 H250 V255 H290','',0],['M210 438 H260 V300 H290','c',0],
+ ['M480 190 H500 V98 H520','',0],['M595 126 V150','',0],['M480 280 H500 V328 H520','',0],['M595 356 V400','',0],
+ ['M335 320 V380','',0],['M435 320 V380','',0],
+ ['M480 232 H750','c',0],['M858 266 V330','c',0],['M750 365 H705 V265 H480','c',1]
+];
+
+const SPECS=[
+['المشروع','Project','SHALFA'],['النوع','Type','Unmanned Surface Vessel Prototype'],['المنصة الأساسية','Base Platform','SHALFA marine hull'],
+['المتحكم الرئيسي','Main Controller','Raspberry Pi 4 Model B'],['نظام التشغيل','Operating System','Raspberry Pi OS Bookworm 64-bit'],['لغة البرمجة','Main Language','Python'],
+['كشف الأجسام','Object Detection','YOLOv5n'],['معالجة الذكاء الاصطناعي','AI Processing','External laptop'],['الحساس الحراري','Thermal Sensor','MLX90640'],['المصفوفة الحرارية','Thermal Array','24 × 32'],
+['GPS','GPS','NEO-8M'],['مشغّل المحركات','Motor Driver','L298N'],['الدفع','Propulsion','Two brushed DC motors'],['التوجيه','Steering','Differential'],
+['متحكم LED','LED Controller','Arduino Nano'],['اتصال المحركات','Motor Communication','UDP Port 5005'],['واجهة المراقبة','Monitoring Interface','HTTP Port 8080'],['خدمة GPS','GPS Service','HTTP Port 8088'],
+['بطارية المحركات','Motor Battery','7.4V'],['طاقة المتحكم الرئيسي','Main Controller Power','USB Power Bank'],['المحاكاة','Simulation','LED + Audio'],['حالة المشروع','Project Status','Functional Prototype']
+];
+
+const SHALFA_OUTLINE=[[0.0,-1.9893],[0.0642,-1.9851],[0.1282,-1.9776],[0.1846,-1.9468],[0.234,-1.9052],[0.2747,-1.8552],[0.3169,-1.8062],[0.3594,-1.7576],[0.4023,-1.7093],[0.4417,-1.6582],[0.4789,-1.6054],[0.5159,-1.5525],[0.5513,-1.4984],[0.5852,-1.4434],[0.6189,-1.3883],[0.6522,-1.333],[0.6795,-1.2744],[0.7073,-1.2161],[0.7385,-1.1595],[0.7643,-1.1003],[0.7897,-1.0409],[0.8118,-0.9802],[0.8338,-0.9195],[0.856,-0.8588],[0.8754,-0.7973],[0.895,-0.7357],[0.9133,-0.6737],[0.9321,-0.612],[0.9475,-0.5492],[0.9656,-0.4874],[0.9734,-0.4234],[0.9864,-0.3601],[0.9958,-0.2962],[1.0044,-0.2322],[1.0113,-0.1679],[1.0187,-0.1038],[1.0227,-0.0394],[1.0257,0.0252],[1.0287,0.0897],[1.0309,0.1542],[1.0309,0.2189],[1.0309,0.2835],[1.0309,0.3481],[1.0304,0.4127],[1.0268,0.4772],[1.0223,0.5417],[1.0175,0.6061],[1.0136,0.6706],[1.0055,0.7345],[0.9978,0.7986],[0.9931,0.863],[0.9851,0.9271],[0.9766,0.9911],[0.9705,1.0554],[0.9603,1.1192],[0.9502,1.183],[0.9416,1.247],[0.9358,1.3113],[0.9261,1.3752],[0.9171,1.4391],[0.9095,1.5032],[0.9003,1.5671],[0.8958,1.6315],[0.8831,1.6947],[0.8724,1.7584],[0.8641,1.8225],[0.8554,1.8864],[0.8323,1.9452],[0.7706,1.9588],[0.706,1.9588],[0.6414,1.9566],[0.5785,1.969],[0.5155,1.981],[0.4512,1.9753],[0.3867,1.9716],[0.3221,1.9706],[0.2591,1.9841],[0.1945,1.9833],[0.1302,1.9771],[0.0658,1.9719],[0.0013,1.9721],[-0.0632,1.9735],[-0.1275,1.9673],[-0.1919,1.9717],[-0.2563,1.9733],[-0.3209,1.9711],[-0.3852,1.9702],[-0.4482,1.9579],[-0.5127,1.9591],[-0.5761,1.9699],[-0.6403,1.9773],[-0.6998,1.957],[-0.7635,1.9575],[-0.8246,1.9381],[-0.8849,1.9225],[-0.8997,1.8607],[-0.9082,1.7966],[-0.9213,1.7335],[-0.9216,1.6691],[-0.9267,1.6047],[-0.9359,1.5408],[-0.9674,1.485],[-0.9725,1.4262],[-0.9544,1.3661],[-0.9604,1.3018],[-0.9668,1.2375],[-0.9699,1.1731],[-0.9784,1.109],[-0.9867,1.045],[-0.9904,0.9806],[-0.9987,0.9165],[-1.0021,0.852],[-1.0021,0.7874],[-1.0064,0.7231],[-1.0175,0.6596],[-1.0209,0.5951],[-1.0228,0.5305],[-1.0268,0.466],[-1.0301,0.4016],[-1.0268,0.3371],[-1.0268,0.2725],[-1.0268,0.2079],[-1.0251,0.1433],[-1.0211,0.0788],[-1.0208,0.0143],[-1.0059,-0.0484],[-1.0021,-0.1128],[-0.9934,-0.1767],[-0.9897,-0.2411],[-0.9795,-0.3044],[-0.961,-0.3662],[-0.948,-0.4295],[-0.9317,-0.492],[-0.9136,-0.554],[-0.8968,-0.6163],[-0.8774,-0.6779],[-0.8639,-0.7411],[-0.8381,-0.8003],[-0.815,-0.8606],[-0.792,-0.921],[-0.7669,-0.9805],[-0.7416,-1.0399],[-0.7143,-1.0985],[-0.6857,-1.1564],[-0.6558,-1.2136],[-0.6261,-1.271],[-0.593,-1.3265],[-0.5653,-1.3848],[-0.5306,-1.4392],[-0.4909,-1.4902],[-0.4535,-1.5429],[-0.416,-1.5955],[-0.376,-1.6462],[-0.3356,-1.6967],[-0.2929,-1.7451],[-0.2488,-1.7924],[-0.2031,-1.8381],[-0.1581,-1.8845],[-0.1142,-1.9318],[-0.0604,-1.9672]];
+
+/* ---------- tiny WebGL2 engine: PBR-ish shading, shadow map, procedural water ---------- */
+const G3=(function(){
+const V3={norm(a){const l=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/l,a[1]/l,a[2]/l]},sub:(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],dot:(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],lerp:(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t]};
+const M4={
+ id:()=>new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]),
+ mul(a,b){const o=new Float32Array(16);for(let i=0;i<4;i++)for(let j=0;j<4;j++){let s=0;for(let k=0;k<4;k++)s+=a[k*4+j]*b[i*4+k];o[i*4+j]=s}return o},
+ persp(f,asp,n,fa){const t=1/Math.tan(f/2),nf=1/(n-fa);return new Float32Array([t/asp,0,0,0,0,t,0,0,0,0,(fa+n)*nf,-1,0,0,2*fa*n*nf,0])},
+ ortho(l,r,b,t,n,f){return new Float32Array([2/(r-l),0,0,0,0,2/(t-b),0,0,0,0,-2/(f-n),0,-(r+l)/(r-l),-(t+b)/(t-b),-(f+n)/(f-n),1])},
+ look(e,c,u){const z=V3.norm(V3.sub(e,c)),x=V3.norm(V3.cross(u,z)),y=V3.cross(z,x);return new Float32Array([x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-V3.dot(x,e),-V3.dot(y,e),-V3.dot(z,e),1])},
+ trs(p,r,s){const cy=Math.cos(r[1]),sy=Math.sin(r[1]),cx=Math.cos(r[0]),sx=Math.sin(r[0]),cz=Math.cos(r[2]),sz=Math.sin(r[2]);
+  const Ry=[[cy,0,sy],[0,1,0],[-sy,0,cy]],Rx=[[1,0,0],[0,cx,-sx],[0,sx,cx]],Rz=[[cz,-sz,0],[sz,cz,0],[0,0,1]];
+  const mm=(A,B)=>A.map((_,i)=>[0,1,2].map(j=>A[i][0]*B[0][j]+A[i][1]*B[1][j]+A[i][2]*B[2][j]));
+  const R=mm(mm(Ry,Rx),Rz),o=new Float32Array(16);
+  for(let c=0;c<3;c++)for(let rr=0;rr<3;rr++)o[c*4+rr]=R[rr][c]*s[c];
+  o[12]=p[0];o[13]=p[1];o[14]=p[2];o[15]=1;return o},
+ nrm(m){ // inverse transpose of upper 3x3
+  const a=m[0],b=m[4],c=m[8],d=m[1],e=m[5],f=m[9],g=m[2],h=m[6],i=m[10];
+  const A=e*i-f*h,B=f*g-d*i,C=d*h-e*g,det=a*A+b*B+c*C||1,k=1/det;
+  return new Float32Array([A*k,(c*h-b*i)*k,(b*f-c*e)*k,B*k,(a*i-c*g)*k,(c*d-a*f)*k,C*k,(b*g-a*h)*k,(a*e-b*d)*k])}
+};
+
+/* ---------- geometry ---------- */
+function finish(pos,idx,nrm,uv){
+  if(!nrm){nrm=new Float32Array(pos.length);
+    for(let i=0;i<idx.length;i+=3){const a=idx[i]*3,b=idx[i+1]*3,c=idx[i+2]*3;
+      const e1=[pos[b]-pos[a],pos[b+1]-pos[a+1],pos[b+2]-pos[a+2]],e2=[pos[c]-pos[a],pos[c+1]-pos[a+1],pos[c+2]-pos[a+2]],n=V3.cross(e1,e2);
+      for(const k of[a,b,c]){nrm[k]+=n[0];nrm[k+1]+=n[1];nrm[k+2]+=n[2]}}
+    for(let i=0;i<nrm.length;i+=3){const l=Math.hypot(nrm[i],nrm[i+1],nrm[i+2])||1;nrm[i]/=l;nrm[i+1]/=l;nrm[i+2]/=l}}
+  return{pos:new Float32Array(pos),nrm:new Float32Array(nrm),uv:new Float32Array(uv||new Array(pos.length/3*2).fill(0)),idx:new Uint32Array(idx)};
+}
+const OW=2.0866,OL=4.0;
+const geo={
+ loft(outline,levels,uvMode){ // levels: {sx,sz,y}
+  const N=outline.length,pos=[],uv=[],idx=[];
+  levels.forEach(l=>outline.forEach(p=>{const x=p[0]*l.sx,z=p[1]*l.sz;pos.push(x,l.y,z);uv.push(x/OW+.5,z/OL+.5)}));
+  for(let l=0;l<levels.length-1;l++)for(let i=0;i<N;i++){const a=l*N+i,b=l*N+(i+1)%N,c=(l+1)*N+i,d=(l+1)*N+(i+1)%N;idx.push(a,c,b,b,c,d)}
+  return finish(pos,idx,null,uv)},
+ fan(outline,sx,sz,y,up){
+  const N=outline.length,pos=[0,y,0],nrm=[0,up?1:-1,0],uv=[.5,.5];
+  outline.forEach(p=>{const x=p[0]*sx,z=p[1]*sz;pos.push(x,y,z);nrm.push(0,up?1:-1,0);uv.push(x/OW+.5,z/OL+.5)});
+  const idx=[];for(let i=0;i<N;i++){const a=1+i,b=1+(i+1)%N;up?idx.push(0,a,b):idx.push(0,b,a)}
+  return finish(pos,idx,nrm,uv)},
+ rbox(w,h,d,r,uvTop){
+  r=Math.min(r,w/2-1e-4,h/2-1e-4,d/2-1e-4);
+  const ax=(half)=>r>0?[-half,-half+r*.3,-half+r*.68,-half+r,0,half-r,half-r*.68,half-r*.3,half]:[-half,0,half];
+  const X=ax(w/2),Y=ax(h/2),Z=ax(d/2),hw=w/2-r,hh=h/2-r,hd=d/2-r,pos=[],nrm=[],uv=[],idx=[];
+  const clampv=(v,m)=>Math.max(-m,Math.min(m,v));
+  const face=(A,B,fixed,mk)=>{const base=pos.length/3;
+    for(const a of A)for(const b of B){const q=mk(a,b,fixed);
+      const ix=clampv(q[0],hw),iy=clampv(q[1],hh),iz=clampv(q[2],hd);let n=[q[0]-ix,q[1]-iy,q[2]-iz];const l=Math.hypot(...n);
+      n=l<1e-9?V3.norm(q):[n[0]/l,n[1]/l,n[2]/l];
+      pos.push(ix+n[0]*r,iy+n[1]*r,iz+n[2]*r);nrm.push(...n);uv.push((ix+n[0]*r)/w+.5,(iz+n[2]*r)/d+.5)}
+    for(let i=0;i<A.length-1;i++)for(let j=0;j<B.length-1;j++){const a=base+i*B.length+j,b=a+1,c=a+B.length,e=c+1;idx.push(a,b,c,b,e,c)}};
+  face(Z,X,w/2,(a,b,f)=>[b,h/2,a]);face(Z,X,0,(a,b)=>[b,-h/2,a]);
+  face(Y,X,0,(a,b)=>[b,a,d/2]);face(Y,X,0,(a,b)=>[b,a,-d/2]);
+  face(Y,Z,0,(a,b)=>[w/2,a,b]);face(Y,Z,0,(a,b)=>[-w/2,a,b]);
+  return finish(pos,idx,nrm,uv)},
+ cyl(r,h,seg,r2){
+  r2=r2==null?r:r2;const pos=[],nrm=[],uv=[],idx=[];
+  for(let i=0;i<=seg;i++){const a=i/seg*Math.PI*2,c=Math.cos(a),s=Math.sin(a),sl=(r-r2)/h,n=V3.norm([c,sl,s]);
+    pos.push(c*r,-h/2,s*r,c*r2,h/2,s*r2);nrm.push(...n,...n);uv.push(i/seg,0,i/seg,1)}
+  for(let i=0;i<seg;i++){const a=i*2;idx.push(a,a+1,a+2,a+1,a+3,a+2)}
+  for(const[sgn,rr] of[[1,r2],[-1,r]]){const b=pos.length/3;pos.push(0,sgn*h/2,0);nrm.push(0,sgn,0);uv.push(.5,.5);
+    for(let i=0;i<=seg;i++){const a=i/seg*Math.PI*2;pos.push(Math.cos(a)*rr,sgn*h/2,Math.sin(a)*rr);nrm.push(0,sgn,0);uv.push(.5+Math.cos(a)*.5,.5+Math.sin(a)*.5)}
+    for(let i=0;i<seg;i++)sgn>0?idx.push(b,b+2+i,b+1+i):idx.push(b,b+1+i,b+2+i)}
+  return finish(pos,idx,nrm,uv)},
+ sphere(r,ws,hs,sy){
+  const pos=[],nrm=[],uv=[],idx=[];sy=sy||1;
+  for(let j=0;j<=hs;j++){const v=j/hs,th=v*Math.PI;for(let i=0;i<=ws;i++){const u=i/ws,ph=u*Math.PI*2;
+    const n=[Math.cos(ph)*Math.sin(th),Math.cos(th),Math.sin(ph)*Math.sin(th)];pos.push(n[0]*r,n[1]*r*sy,n[2]*r);nrm.push(...n);uv.push(u,v)}}
+  for(let j=0;j<hs;j++)for(let i=0;i<ws;i++){const a=j*(ws+1)+i,b=a+1,c=a+ws+1,d=c+1;idx.push(a,c,b,b,c,d)}
+  return finish(pos,idx,nrm,uv)},
+ plane(w,h,flipV){ // XY plane facing +z, uv top-left origin
+  const pos=[-w/2,-h/2,0,w/2,-h/2,0,w/2,h/2,0,-w/2,h/2,0],uv=[0,1,1,1,1,0,0,0];
+  return finish(pos,[0,1,2,0,2,3],[0,0,1,0,0,1,0,0,1,0,0,1],uv)},
+ floor(w,d,tile){const t=tile||1;return finish([-w/2,0,-d/2,w/2,0,-d/2,w/2,0,d/2,-w/2,0,d/2],[0,2,1,0,3,2],[0,1,0,0,1,0,0,1,0,0,1,0],[0,0,t,0,t,t,0,t])},
+ tube(pts,r,seg,samples){
+  // Catmull-Rom through pts
+  const P=[];const n=pts.length;
+  for(let i=0;i<n-1;i++){const p0=pts[Math.max(0,i-1)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(n-1,i+2)];
+    for(let k=0;k<(samples||14);k++){const t=k/(samples||14),t2=t*t,t3=t2*t;
+      P.push([0,1,2].map(c=>.5*((2*p1[c])+(-p0[c]+p2[c])*t+(2*p0[c]-5*p1[c]+4*p2[c]-p3[c])*t2+(-p0[c]+3*p1[c]-3*p2[c]+p3[c])*t3)))}}
+  P.push(pts[n-1]);
+  const pos=[],idx=[];let up=[0,1,0];
+  for(let i=0;i<P.length;i++){const a=P[Math.max(0,i-1)],b=P[Math.min(P.length-1,i+1)];const tg=V3.norm(V3.sub(b,a));
+    let s=V3.cross(tg,up);if(Math.hypot(...s)<1e-4)s=V3.cross(tg,[1,0,0]);s=V3.norm(s);const u=V3.norm(V3.cross(s,tg));up=u;
+    for(let j=0;j<seg;j++){const ang=j/seg*Math.PI*2,c=Math.cos(ang)*r,sn=Math.sin(ang)*r;
+      pos.push(P[i][0]+s[0]*c+u[0]*sn,P[i][1]+s[1]*c+u[1]*sn,P[i][2]+s[2]*c+u[2]*sn)}}
+  for(let i=0;i<P.length-1;i++)for(let j=0;j<seg;j++){const a=i*seg+j,b=i*seg+(j+1)%seg,c=a+seg,d=b+seg;idx.push(a,c,b,b,c,d)}
+  return finish(pos,idx)},
+ merge(list){const pos=[],nrm=[],uv=[],idx=[];let off=0;
+  for(const g of list){pos.push(...g.pos);nrm.push(...g.nrm);uv.push(...g.uv);for(const i of g.idx)idx.push(i+off);off+=g.pos.length/3}
+  return{pos:new Float32Array(pos),nrm:new Float32Array(nrm),uv:new Float32Array(uv),idx:new Uint32Array(idx)}}
+};
+
+/* ---------- shaders ---------- */
+const VS=`#version 300 es
+layout(location=0) in vec3 aPos; layout(location=1) in vec3 aNrm; layout(location=2) in vec2 aUV;
+uniform mat4 uM,uVP,uLVP; uniform mat3 uNM;
+out vec3 vW; out vec3 vN; out vec2 vUV; out vec4 vL;
+void main(){vec4 w=uM*vec4(aPos,1.);vW=w.xyz;vN=normalize(uNM*aNrm);vUV=aUV;vL=uLVP*w;gl_Position=uVP*w;}`;
+const VS_SH=`#version 300 es
+layout(location=0) in vec3 aPos; uniform mat4 uM,uLVP; void main(){gl_Position=uLVP*uM*vec4(aPos,1.);}`;
+const FS_SH=`#version 300 es
+precision mediump float; out vec4 o; void main(){o=vec4(1.);}`;
+const COMMON=`#version 300 es
+precision highp float; precision highp sampler2DShadow;
+in vec3 vW; in vec3 vN; in vec2 vUV; in vec4 vL; out vec4 o;
+uniform vec3 uCam,uKeyDir,uKeyCol,uFillDir,uFillCol,uFog; uniform float uFogD,uExp,uTime;
+uniform sampler2DShadow uShadow;
+vec3 env(vec3 d){
+  float h=d.y*.5+.5;
+  vec3 c=mix(vec3(.012,.03,.036),vec3(.30,.50,.56),smoothstep(.25,1.,h));
+  c+=vec3(1.,.96,.88)*smoothstep(.90,.975,dot(d,uKeyDir))*3.2;
+  c+=vec3(.2,.85,.95)*smoothstep(.86,.96,dot(d,normalize(vec3(.75,.45,-.55))))*1.6;
+  c+=vec3(.5,.7,.8)*smoothstep(.8,.95,dot(d,normalize(vec3(.1,.6,.9))))*.6;
+  return c;}
+float shadowAt(vec4 l,float ndl){
+  vec3 c=l.xyz/l.w*.5+.5; if(c.x<0.||c.x>1.||c.y<0.||c.y>1.||c.z>1.) return 1.;
+  float bias=.0012+.0035*(1.-ndl); vec2 ts=1./vec2(textureSize(uShadow,0)); float s=0.;
+  for(int i=-1;i<=1;i++)for(int j=-1;j<=1;j++) s+=texture(uShadow,vec3(c.xy+vec2(float(i),float(j))*ts*1.3,c.z-bias));
+  return s/9.;}
+vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.,1.);}
+vec3 finalize(vec3 col){float d=length(uCam-vW);col=mix(uFog,col,exp(-d*uFogD));col=aces(col*uExp);return pow(col,vec3(1./2.2));}
+`;
+const FS=COMMON+`
+uniform vec3 uColor,uSide,uEmis; uniform sampler2D uMap; uniform float uHasMap,uTopOnly,uRough,uMetal,uFade,uDbg;
+void main(){
+  if(uFade<1.){float b=fract(dot(gl_FragCoord.xy,vec2(.06711056,.00583715)));b=fract(52.9829189*b);if(b>uFade)discard;}
+  vec3 N=normalize(vN); vec3 gn=cross(dFdx(vW),dFdy(vW)); if(dot(N,gn)<0.) N=-N;
+  vec3 V=normalize(uCam-vW);
+  vec3 alb=uColor;
+  if(uHasMap>.5){vec3 t=pow(texture(uMap,vUV).rgb,vec3(2.2));
+    if(uTopOnly>.5){alb=mix(uSide,t*uColor,smoothstep(.6,.85,N.y));}else alb=t*uColor;}
+  if(uDbg==1.){o=vec4(pow(alb,vec3(1./2.2)),1.);return;}
+  if(uDbg==2.){o=vec4(N*.5+.5,1.);return;}
+  float gloss=1.-uRough; vec3 F0=mix(vec3(.04),alb,uMetal);
+  float NV=max(dot(N,V),0.); vec3 F=F0+(1.-F0)*pow(1.-NV,5.);
+  float ndl=max(dot(N,uKeyDir),0.); float sh=shadowAt(vL,ndl);
+  vec3 amb=mix(vec3(.035,.045,.05),vec3(.17,.23,.26),N.y*.5+.5);
+  vec3 col=alb*(1.-uMetal)*(amb+uKeyCol*ndl*sh+uFillCol*max(dot(N,uFillDir),0.));
+  col+=alb*uMetal*amb*.3;
+  vec3 H=normalize(uKeyDir+V); float sp=mix(8.,320.,gloss*gloss);
+  col+=uKeyCol*pow(max(dot(N,H),0.),sp)*(sp+8.)/25.*F*sh*ndl;
+  col+=env(reflect(-V,N))*F*pow(gloss,1.6)*(.25+.75*mix(sh,1.,.5));
+  col+=vec3(.05,.55,.65)*pow(1.-NV,3.)*.10*(1.-uMetal);
+  col+=uEmis;
+  o=vec4(finalize(col),1.);}`;
+const FS_W=COMMON+`
+uniform float uFlow,uSpeed,uSternZ;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float vn(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
+float hgt(vec2 p){p.y+=uFlow;p+=vec2(uTime*.04,uTime*.025);return vn(p*1.1)*.5+vn(p*2.7+7.)*.28+vn(p*6.3+3.)*.14;}
+void main(){
+  vec2 p=vW.xz; float e=.04;
+  float h0=hgt(p),hx=hgt(p+vec2(e,0.)),hz=hgt(p+vec2(0.,e));
+  vec3 N=normalize(vec3((h0-hx)*1.8,1.,(h0-hz)*1.8));
+  vec3 V=normalize(uCam-vW); float NV=max(dot(N,V),0.); float F=.03+.97*pow(1.-NV,4.);
+  vec3 deep=vec3(.004,.022,.03),shallow=vec3(.014,.075,.09);
+  vec3 col=mix(deep,shallow,h0*.9);
+  col*=.5+.5*shadowAt(vL,1.);
+  vec3 H=normalize(uKeyDir+V);
+  col+=min(env(reflect(-V,N)),vec3(.9))*F*.45;
+  col+=uKeyCol*pow(max(dot(N,H),0.),400.)*.5;
+  // foam: wake behind the stern and bow wave
+  float dz=vW.z-uSternZ; float foam=0.; float nz=vn(p*7.+vec2(0.,uFlow*1.5));
+  if(dz>0.){float hw=.62+dz*.34; float edge=exp(-pow((abs(vW.x)-hw)/(.07+dz*.045),2.))*exp(-dz*.20);
+    float mid=exp(-pow(vW.x/(.5+dz*.12),2.))*exp(-dz*.42)*.7; foam=(edge+mid)*(.5+.7*nz);}
+  vec2 q=vec2(vW.x/1.2,(vW.z+.1)/2.3); float rr=length(q);
+  foam+=exp(-pow((rr-1.02)/.045,2.))*(.3+.7*nz)*.4;
+  col+=vec3(.7,.9,.95)*foam*uSpeed*.6;
+  o=vec4(finalize(col),1.);}`;
+
+function create(canvas){
+  const gl=canvas.getContext('webgl2',{antialias:true,alpha:false,powerPreference:'high-performance'});
+  if(!gl)return null;
+  const comp=(t,s)=>{const sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(sh));return sh};
+  const prog=(v,f)=>{const p=gl.createProgram();gl.attachShader(p,comp(gl.VERTEX_SHADER,v));gl.attachShader(p,comp(gl.FRAGMENT_SHADER,f));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));
+    const U={};const n=gl.getProgramParameter(p,gl.ACTIVE_UNIFORMS);for(let i=0;i<n;i++){const a=gl.getActiveUniform(p,i);U[a.name]=gl.getUniformLocation(p,a.name)}return{p,U}};
+  const P_MAIN=prog(VS,FS),P_WATER=prog(VS,FS_W),P_SH=prog(VS_SH,FS_SH);
+  // shadow map
+  const SM=1024*2;const sTex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,sTex);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.DEPTH_COMPONENT24,SM,SM,0,gl.DEPTH_COMPONENT,gl.UNSIGNED_INT,null);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_COMPARE_MODE,gl.COMPARE_REF_TO_TEXTURE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_COMPARE_FUNC,gl.LEQUAL);
+  const fbo=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,fbo);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.TEXTURE_2D,sTex,0);
+  gl.drawBuffers([gl.NONE]);gl.readBuffer(gl.NONE);gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+  const aniso=gl.getExtension('EXT_texture_filter_anisotropic');
+  const API={gl,M4,V3,geo,nodes:[],loaded:0};
+  API.mesh=(g)=>{const vao=gl.createVertexArray();gl.bindVertexArray(vao);
+    const buf=(data,loc,sz)=>{const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,sz,gl.FLOAT,false,0,0)};
+    buf(g.pos,0,3);buf(g.nrm,1,3);buf(g.uv,2,2);
+    const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,g.idx,gl.STATIC_DRAW);gl.bindVertexArray(null);
+    return{vao,n:g.idx.length}};
+  API.tex=(src)=>{const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);
+    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([20,24,28,255]));
+    const up=img=>{gl.bindTexture(gl.TEXTURE_2D,t);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,img);gl.generateMipmap(gl.TEXTURE_2D);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+      if(aniso)gl.texParameterf(gl.TEXTURE_2D,aniso.TEXTURE_MAX_ANISOTROPY_EXT,Math.min(8,gl.getParameter(aniso.MAX_TEXTURE_MAX_ANISOTROPY_EXT)));API.loaded++};
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+    if(typeof src==='string'){const im=new Image();im.onload=()=>up(im);im.src=src}else up(src);
+    return t};
+  API.canvasTex=(w,h,draw)=>{const c=document.createElement('canvas');c.width=w;c.height=h;draw(c.getContext('2d'),w,h);return API.tex(c)};
+  const D={color:[1,1,1],side:[.02,.02,.02],map:null,topOnly:0,rough:.5,metal:0,emis:[0,0,0],fade:1};
+  API.mat=o=>Object.assign({},D,o);
+  API.node=(o)=>Object.assign({p:[0,0,0],r:[0,0,0],s:[1,1,1],kids:[],mesh:null,mat:null,cast:true,vis:true,world:M4.id()},o||{});
+  API.add=(parent,n)=>{parent.kids.push(n);return n};
+  const upd=(n,pw)=>{const l=M4.trs(n.p,n.r,n.s);n.world=pw?M4.mul(pw,l):l;n.kids.forEach(k=>upd(k,n.world))};
+  const draw=(n,pass,u,flt)=>{
+    if(!n.vis)return;
+    if(n.mesh&&(!flt||flt(n))){
+      if(pass==='shadow'&&!n.cast){}else{
+        gl.uniformMatrix4fv(u.uM,false,n.world);
+        if(pass!=='shadow'){const m=n.mat;gl.uniformMatrix3fv(u.uNM,false,M4.nrm(n.world));
+          if(u.uColor){gl.uniform3fv(u.uColor,m.color);gl.uniform3fv(u.uSide,m.side);gl.uniform3fv(u.uEmis,m.emis);gl.uniform1f(u.uRough,m.rough);gl.uniform1f(u.uMetal,m.metal);gl.uniform1f(u.uTopOnly,m.topOnly);gl.uniform1f(u.uFade,m.fade*(n.fade==null?1:n.fade));
+            gl.uniform1f(u.uHasMap,m.map?1:0);if(m.map){gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,m.map)}}}
+        gl.bindVertexArray(n.mesh.vao);gl.drawElements(gl.TRIANGLES,n.mesh.n,gl.UNSIGNED_INT,0)}}
+    n.kids.forEach(k=>draw(k,pass,u,flt));
+  };
+  API.render=(root,water,cam,env)=>{
+    upd(root,null);
+    const key=V3.norm(env.keyDir),lc=[0,-.3,0],lp=[lc[0]+key[0]*9,lc[1]+key[1]*9,lc[2]+key[2]*9];
+    const LVP=M4.mul(M4.ortho(-3.7,3.7,-3.7,3.7,1,18),M4.look(lp,lc,[0,1,0]));
+    // shadow pass
+    gl.bindFramebuffer(gl.FRAMEBUFFER,fbo);gl.viewport(0,0,SM,SM);gl.enable(gl.DEPTH_TEST);gl.clear(gl.DEPTH_BUFFER_BIT);gl.disable(gl.CULL_FACE);
+    gl.useProgram(P_SH.p);gl.uniformMatrix4fv(P_SH.U.uLVP,false,LVP);draw(root,'shadow',P_SH.U);
+    gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,canvas.width,canvas.height);
+    gl.clearColor(env.clear[0],env.clear[1],env.clear[2],1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    const VP=M4.mul(cam.proj,cam.view);
+    const common=(P)=>{const U=P.U;gl.useProgram(P.p);gl.uniformMatrix4fv(U.uVP,false,VP);gl.uniformMatrix4fv(U.uLVP,false,LVP);
+      gl.uniform3fv(U.uCam,cam.pos);gl.uniform3fv(U.uKeyDir,key);gl.uniform3fv(U.uKeyCol,env.keyCol);gl.uniform3fv(U.uFillDir,V3.norm(env.fillDir));gl.uniform3fv(U.uFillCol,env.fillCol);
+      gl.uniform3fv(U.uFog,env.fog);gl.uniform1f(U.uFogD,env.fogD);gl.uniform1f(U.uExp,env.exp);gl.uniform1f(U.uTime,env.time);
+      gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,sTex);gl.uniform1i(U.uShadow,1);if(U.uMap)gl.uniform1i(U.uMap,0);return U};
+    // water
+    let U=common(P_WATER);gl.uniform1f(U.uFlow,env.flow);gl.uniform1f(U.uSpeed,env.speed);gl.uniform1f(U.uSternZ,env.sternZ);
+    gl.uniformMatrix4fv(U.uM,false,water.world);gl.uniformMatrix3fv(U.uNM,false,M4.nrm(water.world));gl.bindVertexArray(water.mesh.vao);gl.drawElements(gl.TRIANGLES,water.mesh.n,gl.UNSIGNED_INT,0);
+    U=common(P_MAIN);gl.uniform1f(U.uDbg,API.dbg||0);draw(root,'main',U);
+  };
+  API.persp=(fov,asp,shx,shy)=>{const p=M4.persp(fov,asp,.5,160);p[8]=-shx;p[9]=-shy;return p};
+  API.size=(w,h,dpr)=>{canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr)};
+  return API;
+}
+return{create,geo,M4,V3};
+})();
+
+/* procedural textures: everything is drawn with code (no photos) */
+function ShalfaTextures(A){
+  const T={};
+  const rr=(c,x,y,w,h,r)=>{c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()};
+  const noise=(c,w,h,a,n)=>{for(let i=0;i<n;i++){c.fillStyle=`rgba(${Math.random()<.5?255:0},${Math.random()<.5?255:0},255,${Math.random()*a})`;c.fillStyle=Math.random()<.5?`rgba(255,255,255,${Math.random()*a})`:`rgba(0,0,0,${Math.random()*a})`;c.fillRect(Math.random()*w,Math.random()*h,1+Math.random()*2,1+Math.random()*2)}};
+  const F='Montserrat,Arial,sans-serif';
+  /* deck: canvas x -> world x (width 2.087), canvas y -> world z (length 4.0, bow at top) */
+  T.deck=A.canvasTex(1024,2048,(c,w,h)=>{
+    const g=c.createLinearGradient(0,0,w,0);g.addColorStop(0,'#0d1114');g.addColorStop(.5,'#161c21');g.addColorStop(1,'#0d1114');c.fillStyle=g;c.fillRect(0,0,w,h);
+    noise(c,w,h,.09,14000);
+    const X=x=>(x/2.0866+.5)*w,Z=z=>(z/4+.5)*h;
+    const line=(pts)=>{c.save();c.lineJoin='round';c.lineCap='round';
+      c.strokeStyle='rgba(0,0,0,.9)';c.lineWidth=7;c.beginPath();pts.forEach((p,i)=>i?c.lineTo(X(p[0]),Z(p[1])):c.moveTo(X(p[0]),Z(p[1])));c.stroke();
+      c.translate(2,2);c.strokeStyle='rgba(140,165,185,.28)';c.lineWidth=2.5;c.stroke();c.restore()};
+    // bow facets (V creases) like the moulded deck
+    for(const s of[-1,1]){line([[s*.78,-.56],[s*.42,-.62],[s*.03,-1.55]]);line([[s*.42,-.62],[s*.3,-.3]])}
+    // inner raised-deck contour ring near the edge
+    c.save();c.strokeStyle='rgba(0,0,0,.6)';c.lineWidth=5;c.beginPath();SHALFA_OUTLINE.forEach((p,i)=>{const x=X(p[0]*.9),z=Z(p[1]*.93);i?c.lineTo(x,z):c.moveTo(x,z)});c.closePath();c.stroke();c.restore();
+    // perimeter screws
+    SHALFA_OUTLINE.forEach((p,i)=>{if(i%4)return;const cx=X(p[0]*.955),cy=Z(p[1]*.965);c.fillStyle='#030405';c.beginPath();c.arc(cx,cy,8,0,7);c.fill();c.fillStyle='#3d464d';c.beginPath();c.arc(cx,cy,5,0,7);c.fill()});
+    // SHALFA wordmark (vector text, runs towards the bow)
+    c.save();c.translate(X(-.5),Z(.55));c.rotate(-Math.PI/2);c.transform(1,0,-.22,1,0,0);c.fillStyle='rgba(235,242,248,.95)';c.font=`800 84px ${F}`;c.textAlign='center';c.fillText('SHALFA',0,26);c.restore();
+    // pinhole vents behind the camera pad and near the front
+    c.fillStyle='#030405';[[0,1.18],[-.03,1.22],[.03,1.22],[-.02,-.52],[.02,-.52]].forEach(p=>{c.beginPath();c.arc(X(p[0]),Z(p[1]),5,0,7);c.fill()});
+  });
+  /* Pi case top 690x470: flat black case with a berry cut-out */
+  T.pi=A.canvasTex(690,470,(c,w,h)=>{
+    c.fillStyle='#2b2d31';c.fillRect(0,0,w,h);noise(c,w,h,.05,5000);
+    c.strokeStyle='rgba(255,255,255,.06)';c.lineWidth=4;rr(c,16,16,w-32,h-32,30);c.stroke();
+    c.save();c.translate(w*.5,h*.52);const hole=(x,y,r)=>{c.fillStyle='#020202';c.beginPath();c.arc(x,y,r,0,7);c.fill();c.strokeStyle='rgba(255,255,255,.14)';c.lineWidth=1.5;c.stroke()};
+    [[-22,-4],[0,-10],[22,-4],[-30,16],[-10,12],[10,12],[30,16],[-20,36],[0,32],[20,36],[0,52]].forEach(p=>hole(p[0]*1.25,p[1]*1.25,10));
+    c.fillStyle='#020202';c.beginPath();c.ellipse(-24,-34,22,10,-.6,0,7);c.fill();c.beginPath();c.ellipse(24,-34,22,10,.6,0,7);c.fill();c.beginPath();c.ellipse(0,-42,9,16,0,0,7);c.fill();c.restore();
+  });
+  /* L298N 350x380 */
+  T.l298=A.canvasTex(350,380,(c,w,h)=>{
+    c.fillStyle='#b0161a';c.fillRect(0,0,w,h);noise(c,w,h,.08,3000);
+    c.strokeStyle='rgba(255,170,120,.35)';c.lineWidth=3;for(let i=0;i<14;i++){c.beginPath();c.moveTo(20,30+i*24);c.lineTo(80+(i%4)*40,30+i*24);c.lineTo(110+(i%3)*50,60+i*22);c.stroke()}
+    c.fillStyle='#e8d9c8';c.font=`700 26px ${F}`;c.textAlign='center';c.fillText('L298N',w*.5,h*.88);c.font=`600 13px ${F}`;c.fillText('12V  5V  EN  IN1-4',w*.5,h*.95);
+    c.fillStyle='#d6b24a';for(const p of[[24,24],[w-24,24],[24,h-24],[w-24,h-24]]){c.beginPath();c.arc(p[0],p[1],11,0,7);c.fill();c.fillStyle='#4a0a0c';c.beginPath();c.arc(p[0],p[1],6,0,7);c.fill();c.fillStyle='#d6b24a'}
+    c.fillStyle='#d6b24a';for(let i=0;i<10;i++){c.fillRect(30+i*14,h-62,8,26)}
+  });
+  /* GPS patch 190x190 and board 200x280 */
+  T.gps=A.canvasTex(190,190,(c,w,h)=>{
+    c.fillStyle='#d9cf9e';c.fillRect(0,0,w,h);noise(c,w,h,.1,800);
+    c.fillStyle='#bba54f';rr(c,20,20,w-40,h-40,10);c.fill();c.strokeStyle='#8a7630';c.lineWidth=2;c.beginPath();c.moveTo(w/2,26);c.lineTo(w/2,h-26);c.moveTo(26,h/2);c.lineTo(w-26,h/2);c.stroke();
+    c.fillStyle='#6b5a20';c.beginPath();c.arc(w*.7,h*.3,5,0,7);c.fill();
+  });
+  T.gpsb=A.canvasTex(200,280,(c,w,h)=>{
+    c.fillStyle='#14305e';c.fillRect(0,0,w,h);noise(c,w,h,.07,1500);
+    c.fillStyle='#0a0c10';rr(c,70,150,60,60,4);c.fill();c.fillStyle='#8a949c';c.font=`700 14px ${F}`;c.textAlign='center';c.fillText('u-blox',w/2,176);c.fillText('NEO-8M',w/2,194);
+    c.fillStyle='#d6b24a';for(let i=0;i<4;i++){c.beginPath();c.arc(30+i*46,255,8,0,7);c.fill()}
+    c.fillStyle='#e8d9c8';c.font=`600 12px ${F}`;c.fillText('VCC  RX  TX  GND',w/2,238);
+    c.fillStyle='#1d6e33';c.beginPath();c.arc(30,120,6,0,7);c.fill();
+  });
+  /* battery 340x580 */
+  T.batt=A.canvasTex(340,580,(c,w,h)=>{
+    const g=c.createLinearGradient(0,0,w,0);g.addColorStop(0,'#0a3a9c');g.addColorStop(.5,'#1c63d6');g.addColorStop(1,'#0a3a9c');c.fillStyle=g;c.fillRect(0,0,w,h);
+    c.fillStyle='#eef3f8';rr(c,40,110,260,340,18);c.fill();
+    c.fillStyle='#0b2a63';c.font=`800 54px ${F}`;c.textAlign='center';c.fillText('7.4V',w/2,200);c.font=`700 26px ${F}`;c.fillText('2S Li-ion',w/2,246);c.fillText('Rechargeable',w/2,284);
+    c.fillStyle='#d12';c.fillRect(70,330,200,10);c.fillStyle='#222';c.font=`600 17px ${F}`;c.fillText('CAUTION · DO NOT SHORT',w/2,380);
+    c.strokeStyle='#fff';c.lineWidth=3;rr(c,10,10,w-20,h-20,26);c.stroke();
+  });
+  /* router 820x470: black leather top, gold rim */
+  T.router=A.canvasTex(820,470,(c,w,h)=>{
+    c.fillStyle='#0d0d0e';c.fillRect(0,0,w,h);
+    for(let i=0;i<9000;i++){c.fillStyle=Math.random()<.5?'rgba(255,255,255,.05)':'rgba(0,0,0,.35)';c.beginPath();c.arc(Math.random()*w,Math.random()*h,1+Math.random()*2.2,0,7);c.fill()}
+    const g=c.createLinearGradient(0,0,0,h*.4);g.addColorStop(0,'rgba(255,255,255,.28)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;rr(c,30,30,w-60,h*.34,30);c.fill();
+    c.strokeStyle='#c9a24a';c.lineWidth=16;rr(c,10,10,w-20,h-20,46);c.stroke();c.strokeStyle='#efd28a';c.lineWidth=3;rr(c,6,6,w-12,h-12,48);c.stroke();
+    
+  });
+  /* camera board front 960x400 (viewed from front) */
+  T.cam=A.canvasTex(960,400,(c,w,h)=>{
+    c.fillStyle='#0a1a14';c.fillRect(0,0,w,h);noise(c,w,h,.06,3000);
+    c.fillStyle='#d6b24a';for(let i=0;i<16;i++){c.fillRect(30+i*14,h-40,8,22)}
+    for(const x of[w*.5-260,w*.5+260]){c.fillStyle='#050607';c.beginPath();c.arc(x,h/2,92,0,7);c.fill();c.strokeStyle='#2d3338';c.lineWidth=8;c.beginPath();c.arc(x,h/2,92,0,7);c.stroke()}
+    c.fillStyle='#e8d9c8';c.font=`700 22px ${F}`;c.textAlign='center';c.fillText('STEREO · NIGHT VISION',w/2,56);
+  });
+  /* power bank */
+  T.bank=A.canvasTex(1024,448,(c,w,h)=>{
+    const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,'#2a2d30');g.addColorStop(1,'#101214');c.fillStyle=g;c.fillRect(0,0,w,h);
+    c.fillStyle='#8fd21a';c.fillRect(0,h*.55,w*.92,h*.2);
+    c.fillStyle='#17191b';c.font=`bold 70px ${F}`;c.fillText('Goui',w*.07,h*.7);
+    c.fillStyle='#c7ff4a';for(let i=0;i<5;i++){c.beginPath();c.arc(w*.58+i*28,h*.65,6,0,6.3);c.fill()}
+    c.fillStyle='#8fd21a';c.fillRect(w*.92,0,w*.08,h)});
+  return T;
+}
+
+/* ---------- SHALFA 3D model + scroll choreography ---------- */
+function Shalfa3D(canvas){
+  const A=G3.create(canvas); if(!A)return null;
+  const {geo,M4,V3}=A;
+  const lerp=(a,b,t)=>a+(b-a)*t, clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)), sm=(a,b,v)=>{const t=clamp((v-a)/(b-a));return t*t*(3-2*t)};
+  const OUT=SHALFA_OUTLINE;
+  const N=A.node,add=A.add,mat=A.mat;
+  const root=N();
+  const boat=add(root,N());
+  const mesh=(parent,g,m,o)=>{const n=N(Object.assign({mesh:A.mesh(g),mat:m},o||{}));add(parent,n);return n};
+
+  /* textures */
+  const T=ShalfaTextures(A);
+
+  /* materials */
+  const plastic=mat({color:[.045,.05,.055],rough:.42}), outer=mat({color:[.03,.034,.04],rough:.33}), rubber=mat({color:[.02,.02,.022],rough:.85}),
+    inner=mat({color:[.035,.04,.045],rough:.5}), floorM=mat({color:[.022,.026,.03],rough:.3}),
+    deckM=mat({map:T.deck,color:[1,1,1],rough:.38,topOnly:1,side:[.04,.045,.05]});
+  const mk=(c,r,m,e)=>mat({color:c,rough:r==null?.5:r,metal:m||0,emis:e||[0,0,0]});
+
+  /* hull */
+  const D=.75,FLOOR=-.35,HL=.14;
+  const sc=y=>{const t=clamp(-y/D);return{sx:lerp(1,.62,Math.pow(t,1.25)),sz:lerp(1,.9,t)}};
+  const lv=(from,to,n,k)=>{const a=[];for(let i=0;i<=n;i++){const y=lerp(from,to,i/n),s=sc(y);a.push({sx:s.sx*(k||1),sz:s.sz*(k||1),y})}return a};
+  const tub=add(boat,N());
+  mesh(tub,geo.loft(OUT,lv(0,-D,9)),outer);
+  mesh(tub,geo.loft(OUT,[{sx:1,sz:1,y:0},{sx:.955,sz:.965,y:0}]),rubber);
+  mesh(tub,geo.loft(OUT,lv(0,FLOOR,5,.958)),inner);
+  const fs=sc(FLOOR);mesh(tub,geo.fan(OUT,fs.sx*.958,fs.sz*.958,FLOOR,true),floorM);
+  const ridge=geo.rbox(.2,.1,2.3,.03);
+  [-.5,.5].forEach(x=>mesh(tub,ridge,floorM,{p:[x,FLOOR+.04,.35]}));
+  const boss=geo.cyl(.06,.12,16);[[-.75,-.9],[.75,-.9],[-.7,1.5],[.7,1.5],[-.85,.2],[.85,.2],[0,1.6]].forEach(p=>mesh(tub,boss,rubber,{p:[p[0],FLOOR+.05,p[1]]}));
+  /* ---- lid: forward deck + raised cabin, open stern well ---- */
+  const ZC=1.33,FY=HL-.1,CH=HL+.075;
+  const clipZ=(poly,zc,keepLess)=>{const out=[],n=poly.length,ins=p=>keepLess?p[1]<=zc:p[1]>=zc;
+    for(let i=0;i<n;i++){const a=poly[i],b=poly[(i+1)%n],ia=ins(a),ib=ins(b);if(ia)out.push(a);if(ia!==ib){const t=(zc-a[1])/(b[1]-a[1]);out.push([a[0]+(b[0]-a[0])*t,zc])}}return out};
+  const outA=clipZ(OUT,ZC,true),outBraw=clipZ(OUT,ZC,false);
+  const zB=outBraw.reduce((s,p)=>s+p[1],0)/outBraw.length,outB=outBraw.map(p=>[p[0],p[1]-zB]);
+  const pivot=add(boat,N({p:[0,0,1.97]}));
+  const lid=add(pivot,N({p:[0,0,-1.97]}));
+  const cabSide=mat({color:[.05,.058,.066],rough:.45});
+  mesh(lid,geo.fan(OUT.length?outA:outA,.975,.985,HL,true),deckM);
+  mesh(lid,geo.loft(outA,[{sx:.975,sz:.985,y:HL},{sx:.99,sz:.993,y:HL-.02},{sx:1,sz:1,y:HL-.06},{sx:1,sz:1,y:0}]),plastic);
+  mesh(lid,geo.fan(outA,1,1,0,false),plastic);
+  // cabin hump (teardrop)
+  const ZT=[1.3,1.0,.6,.2,-.1,-.35,-.55,-.68,-.74],HW=[.8,.79,.74,.66,.57,.44,.28,.12,0];
+  const hwAt=z=>{for(let i=0;i<ZT.length-1;i++)if(z<=ZT[i]&&z>=ZT[i+1]){const t=(ZT[i]-z)/(ZT[i]-ZT[i+1]);return lerp(HW[i],HW[i+1],t)}return 0};
+  let side=[];for(let i=0;i<=34;i++){const z=lerp(1.3,-.74,i/34);side.push([hwAt(z),z])}
+  for(let k=0;k<3;k++)side=side.map((p,i)=>i>0&&i<side.length-1?[(side[i-1][0]+2*p[0]+side[i+1][0])/4,p[1]]:p);
+  const cab=side.map(p=>[p[0],p[1]]).concat(side.slice(1,-1).reverse().map(p=>[-p[0],p[1]]));
+  mesh(lid,geo.loft(cab,[{sx:1,sz:1,y:HL-.02},{sx:.985,sz:1,y:HL+.02},{sx:.93,sz:1,y:HL+.06},{sx:.9,sz:1,y:CH}]),cabSide);
+  mesh(lid,geo.fan(cab,.9,1,CH,true),deckM);
+  // stern well (open cockpit that holds the router)
+  const well=add(lid,N({p:[0,0,zB]}));
+  mesh(well,geo.loft(outB,[{sx:.985,sz:1,y:HL},{sx:1,sz:1,y:HL-.04},{sx:1,sz:1,y:0}]),plastic);
+  mesh(well,geo.loft(outB,[{sx:.965,sz:.975,y:HL-.01},{sx:.955,sz:.97,y:FY}]),mat({color:[.03,.034,.038],rough:.6}));
+  mesh(well,geo.fan(outB,.955,.97,FY,true),mat({color:[.022,.025,.029],rough:.55}));
+  mesh(well,geo.fan(outB,1,1,0,false),plastic);
+  // front wall of the well = back face of the shoulder, plus a ridge along the cut
+  mesh(lid,geo.rbox(1.5,.05,.05,.02),mk([.04,.045,.05],.5),{p:[0,HL-.045,ZC+.01],cast:false});
+  // glue bead along the transom + tape patch
+  const glue=mk([.01,.01,.011],.85);
+  for(let i=0;i<22;i++){const x=-.86+i*.078;mesh(lid,geo.sphere(.04+((i*7)%5)*.006,8,6,.55),glue,{p:[x,FY+.03,1.86+((i*5)%3)*.012],cast:false})}
+  mesh(lid,geo.rbox(.14,.012,.26,.004),mk([.02,.02,.022],.7),{p:[-.8,FY+.012,1.74],r:[0,.2,0],cast:false});
+  // stern LED posts
+  const redM=mk([.5,.02,.02],.3,0,[1.7,.1,.1]),post=mk([.015,.015,.017],.5);
+  [[-.7,1.9],[.7,1.9]].forEach(p=>{mesh(lid,geo.cyl(.055,.12,16),post,{p:[p[0],FY+.06,p[1]]});mesh(lid,geo.sphere(.028,10,8),redM,{p:[p[0],FY+.14,p[1]],cast:false});mesh(lid,geo.sphere(.022,10,8),redM,{p:[p[0]*1.03,FY+.12,p[1]-.05],cast:false})});
+  // cable hole in the transom + cable
+  mesh(lid,geo.rbox(.12,.07,.05,.015),mk([.004,.004,.005],.9),{p:[0,FY+.06,1.95],cast:false});
+
+  /* deck hardware (on the cabin / bow deck) */
+  const metal=mk([.55,.58,.6],.28,.9),gold=mk([.8,.65,.2],.25,.95);
+  const sw=add(lid,N({p:[.3,CH,-.3]}));
+  mesh(sw,geo.cyl(.045,.04,20),metal,{p:[0,.02,0]});mesh(sw,geo.cyl(.03,.05,14),mk([.02,.02,.02],.4),{p:[0,.06,0]});
+  mesh(sw,geo.cyl(.012,.15,10,.02),mk([.02,.02,.022],.35),{p:[.0,.14,0],r:[0,0,0]});
+  const sma=add(lid,N({p:[-.3,CH,-.3]}));
+  mesh(sma,geo.cyl(.055,.03,6),metal,{p:[0,.015,0]});mesh(sma,geo.cyl(.03,.07,16),gold,{p:[0,.06,0]});mesh(sma,geo.cyl(.012,.09,10),mk([.9,.8,.4],.3,.9),{p:[0,.1,0]});
+  // bow navigation light housing
+  const bl=add(lid,N({p:[0,HL,-.85]}));
+  mesh(bl,geo.rbox(.22,.15,.3,.06),mk([.015,.017,.02],.4),{p:[0,.075,0]});
+  mesh(bl,geo.cyl(.035,.04,14),metal,{p:[0,.07,-.17],r:[Math.PI/2,0,0]});mesh(bl,geo.cyl(.02,.03,10),mk([.02,.02,.02],.4),{p:[0,.07,-.19],r:[Math.PI/2,0,0]});
+  // status LEDs (4 green) on the left edge of the deck
+  const grn=mk([.02,.4,.1],.3,0,[.1,1.6,.4]);[0,1,2,3].forEach(i=>mesh(lid,geo.sphere(.012,8,6),grn,{p:[.745,HL+.012,.4+i*.04],cast:false}));
+  // camera pad on the cabin
+  mesh(lid,geo.rbox(.56,.035,.9,.07),mk([.012,.014,.016],.4),{p:[0,CH+.016,.29],cast:false});
+  mesh(lid,geo.rbox(.5,.02,.84,.06),mk([.02,.023,.027],.3),{p:[0,CH+.036,.29],cast:false});
+
+  /* camera mount (rides with the lid, then flies in) */
+  const camG=add(lid,N({p:[0,CH+.04,.16]}));
+  const cam=add(camG,N({s:[.82,.82,.82]}));
+  const cb=mk([.012,.014,.017],.3);
+  mesh(cam,geo.rbox(.3,.08,.22,.03),cb,{p:[0,.04,.02]});
+  mesh(cam,geo.rbox(.18,.26,.05,.015),cb,{p:[0,.17,.07]});
+  mesh(cam,geo.rbox(.2,.05,.2,.02),cb,{p:[0,.3,.01]});
+  mesh(cam,geo.rbox(.62,.4,.05,.02),cb,{p:[0,.52,0]});
+  [-.31,.31].forEach(x=>{mesh(cam,geo.cyl(.2,.05,40),cb,{p:[x,.52,0],r:[Math.PI/2,0,0]});
+    mesh(cam,geo.cyl(.15,.02,32),mk([.02,.02,.022],.2,.5),{p:[x,.52,-.03],r:[Math.PI/2,0,0],cast:false});
+    mesh(cam,geo.cyl(.115,.03,32),mk([.9,.93,.96],.12,0,[1.0,1.05,1.1]),{p:[x,.52,-.045],r:[Math.PI/2,0,0],cast:false});
+    mesh(cam,geo.cyl(.04,.035,18),mk([.7,.72,.74],.2,.3),{p:[x,.52,-.06],r:[Math.PI/2,0,0],cast:false})});
+  mesh(cam,geo.cyl(.1,.05,28),mk([.03,.03,.034],.25,.6),{p:[0,.52,-.04],r:[Math.PI/2,0,0],cast:false});
+  mesh(cam,geo.sphere(.065,20,14),mk([.01,.015,.025],.03,.2),{p:[0,.52,-.075],cast:false});
+  mesh(cam,geo.rbox(.16,.16,.02,.01),mk([.05,.22,.75],.35),{p:[0,.78,-.01]});
+  mesh(cam,geo.cyl(.045,.04,18),mk([.01,.01,.012],.2),{p:[0,.78,-.035],r:[Math.PI/2,0,0],cast:false});
+  [[-.45,.64],[.45,.64],[-.45,.4],[.45,.4]].forEach(q=>mesh(cam,geo.cyl(.012,.03,8),metal,{p:[q[0],q[1],-.03],r:[Math.PI/2,0,0],cast:false}));
+
+  /* router: black leather body with gold rim, sits in the stern well */
+  const routerG=add(lid,N({p:[.04,FY,1.66]}));
+  const routerM=mat({map:T.router,color:[1,1,1],rough:.5,topOnly:1,side:[.02,.02,.022]});
+  mesh(routerG,geo.rbox(.82,.11,.47,.045),routerM,{p:[0,.055,0]});
+  mesh(routerG,geo.rbox(.84,.02,.49,.05),mk([.78,.62,.26],.28,.95),{p:[0,.036,0]});
+  mesh(routerG,geo.rbox(.4,.02,.012,.004),mk([.01,.01,.01],.5),{p:[-.1,.06,.236]});
+  mesh(routerG,geo.cyl(.018,.3,10),mk([.01,.01,.01],.6),{p:[-.05,.03,.35],r:[Math.PI/2,0,0]});
+
+  /* interior parts */
+  const s=.00172,ix=px=>(px-621)*s,iz=py=>-1.82+py*s;
+  const parts={};
+  const grp=(id,x,z)=>{const g=add(boat,N({p:[x,FLOOR,z]}));parts[id]=g;return g};
+  // Raspberry Pi 4 in its flat black case
+  const pi=grp('pi',ix(620),iz(1128));
+  mesh(pi,geo.rbox(.69,.13,.47,.04),mat({map:T.pi,rough:.4,topOnly:1,side:[.025,.027,.03]}),{p:[0,.075,0],r:[0,-.02,0]});
+  mesh(pi,geo.rbox(.69,.04,.47,.03),mk([.008,.008,.01],.5),{p:[0,.02,0],r:[0,-.02,0]});
+  [[-.17,.05],[.0,.05]].forEach(q=>mesh(pi,geo.rbox(.05,.07,.1,.01),mk([.01,.01,.012],.5),{p:[-.365,.08,q[0]],r:[0,-.02,0]}));
+  mesh(pi,geo.rbox(.34,.012,.1,.004),mk([.92,.92,.9],.6),{p:[.45,.11,-.05],r:[0,-.07,0]});
+  // L298N: red PCB, black finned heat sink, two electrolytic caps, blue screw terminals
+  const l298=grp('l298n',ix(646),iz(1589));
+  mesh(l298,geo.rbox(.35,.026,.38,.004),mat({map:T.l298,rough:.45,topOnly:1,side:[.5,.04,.04]}),{p:[0,.07,0]});
+  [[-.15,-.16],[.15,-.16],[-.15,.16],[.15,.16]].forEach(p=>mesh(l298,geo.cyl(.012,.06,10),mk([.8,.65,.2],.3,.9),{p:[p[0],.03,p[1]]}));
+  const hs=mk([.015,.015,.017],.45,.4);
+  mesh(l298,geo.rbox(.16,.025,.11,.004),hs,{p:[0,.1,.12]});
+  for(let i=0;i<8;i++)mesh(l298,geo.rbox(.012,.075,.11,.003),hs,{p:[-.07+i*.02,.15,.12]});
+  [-.075,.075].forEach(x=>{mesh(l298,geo.cyl(.03,.075,20),mk([.7,.72,.75],.3,.85),{p:[x,.115,-.02]});mesh(l298,geo.cyl(.026,.004,20),mk([.05,.05,.055],.4),{p:[x,.155,-.02]})});
+  const blue=mk([.05,.25,.78],.4);
+  [[-.07,-.145],[.07,-.145],[-.152,.0],[.152,.0]].forEach(p=>mesh(l298,geo.rbox(.07,.07,.07,.008),blue,{p:[p[0],.115,p[1]]}));
+  // GPS: ceramic patch + module board
+  const gpsG=grp('gps',ix(238),iz(965));
+  mesh(gpsG,geo.rbox(.19,.04,.19,.012),mat({map:T.gps,rough:.35,topOnly:1,side:[.7,.62,.3]}),{p:[ix(245)-ix(238),.04,iz(867)-iz(965)],r:[0,.06,0]});
+  mesh(gpsG,geo.rbox(.2,.022,.28,.004),mat({map:T.gpsb,rough:.4,topOnly:1,side:[.03,.03,.03]}),{p:[ix(232)-ix(238),.03,iz(1062)-iz(965)],r:[0,-.12,0]});
+  // 7.4V pack: two blue cells in a black tray
+  const batt=grp('battery',ix(588),iz(745));
+  mesh(batt,geo.rbox(.4,.06,.68,.012),rubber,{p:[0,.03,0]});
+  const cellM=mk([.04,.17,.62],.22);
+  [-.085,.085].forEach(x=>{mesh(batt,geo.cyl(.088,.56,28),cellM,{p:[x,.15,0],r:[Math.PI/2,0,-.05]});mesh(batt,geo.cyl(.05,.012,18),mk([.8,.82,.84],.3,.9),{p:[x,.15,.285],r:[Math.PI/2,0,0]})});
+  mesh(batt,geo.rbox(.17,.012,.38,.004),mk([.9,.92,.95],.5),{p:[0,.238,-.02],r:[0,-.05,0]});
+  mesh(batt,geo.rbox(.1,.05,.06,.008),mk([.9,.85,.7],.4),{p:[.1,.12,.33]});
+  // power bank
+  const bank=grp('bank',ix(602),iz(430));
+  mesh(bank,geo.rbox(.82,.15,.37,.05),mat({map:T.bank,rough:.45,topOnly:1,side:[.035,.04,.04]}),{p:[0,.09,0],r:[0,-.47,0]});
+  // motors (two mounts)
+  const motorG=(id,x,z)=>{const g=grp(id,x,z);mesh(g,geo.cyl(.115,.05,28),rubber,{p:[0,.03,0]});mesh(g,geo.cyl(.095,.2,28,.085),mk([.03,.03,.034],.7),{p:[0,.14,0]});mesh(g,geo.sphere(.09,24,14,.6),mk([.04,.04,.045],.55),{p:[0,.24,0]});return g};
+  const mL=motorG('motorL',ix(405),iz(1420)),mR=motorG('motorR',ix(865),iz(1365));
+  parts.motor=mL;
+
+  /* wires */
+  const wires=add(boat,N());const wlist=[];
+  const wire=(pts,r,c)=>{const n=mesh(wires,geo.tube(pts.map(p=>[p[0],FLOOR+p[1],p[2]]),r,7,12),mk(c,.6));wlist.push(n)};
+  wire([[-.7,.06,-.27],[-.62,.1,-.62],[-.3,.14,-.74],[.2,.14,-.74],[.55,.12,-.62],[.7,.08,-.35],[.72,.05,0]],.028,[.02,.02,.022]);
+  wire([[.34,.07,-.9],[.5,.09,-.55],[.3,.14,-.22],[.22,.2,-.05]],.014,[.02,.02,.02]);
+  wire([[-.02,.1,-.26],[.45,.12,-.1],[.52,.08,.5],[.3,.06,.85],[.12,.1,.92]],.012,[.8,.08,.08]);
+  wire([[.0,.09,-.26],[.48,.1,-.08],[.55,.07,.5],[.33,.05,.86],[.14,.09,.93]],.012,[.02,.02,.02]);
+  mesh(wires,geo.rbox(.46,.012,.16,.004),mk([.9,.9,.88],.6),{p:[.58,FLOOR+.15,.1]});wlist.push(wires.kids[wires.kids.length-1]);
+
+  /* water */
+  const water=N({mesh:A.mesh(geo.floor(180,180,1)),p:[0,-.5,0]});water.world=M4.trs(water.p,[0,0,0],[1,1,1]);
+
+  /* part registry for choreography */
+  const EX={pi:[-1.45,1.25,.0],bank:[1.5,1.6,-.7],battery:[1.55,1.0,-.05],gps:[-1.7,.95,-.55],l298n:[-1.0,1.05,1.0],motorL:[-1.5,.8,.85],motorR:[1.6,.8,.55]};
+  const rest={};Object.keys(EX).forEach(k=>rest[k]=parts[k].p.slice());
+  const camSlot=[-1.15,1.2,-1.55],rtSlot=[.9,1.1,2.45];
+  const camRest=camG.p.slice(),rtRest=routerG.p.slice();
+  let detached=false;
+  // order of anchor nodes aligned with PARTS in data.js: pi, cam, gps, l298n, motor, battery, power, router
+  const anchors=[{n:parts.pi,o:[0,.2,0]},{n:camG,o:[0,.5,0],deck:1},{n:parts.gps,o:[0,.06,0]},{n:parts.l298n,o:[0,.15,0]},{n:parts.motorL,o:[0,.2,0]},{n:parts.battery,o:[0,.2,0]},{n:parts.bank,o:[0,.15,0]},{n:routerG,o:[0,.1,0],deck:1}];
+  const extra={motorR:{n:parts.motorR,o:[0,.2,0]}};
+
+  const ORDER=[0,5,1,6,2,3,4,7];
+  let VP=null,SWc=1,SHc=1,flow=0;
+  const nodeWorld=(n,o)=>{const m=n.world;return[m[0]*o[0]+m[4]*o[1]+m[8]*o[2]+m[12],m[1]*o[0]+m[5]*o[1]+m[9]*o[2]+m[13],m[2]*o[0]+m[6]*o[1]+m[10]*o[2]+m[14]]};
+  const project=w=>{const c=VP;const x=c[0]*w[0]+c[4]*w[1]+c[8]*w[2]+c[12],y=c[1]*w[0]+c[5]*w[1]+c[9]*w[2]+c[13],ww=c[3]*w[0]+c[7]*w[1]+c[11]*w[2]+c[15];return[(x/ww*.5+.5)*SWc,(1-(y/ww*.5+.5))*SHc,ww]};
+
+  const HERO={pos:[3.2,2.2,-4.9],look:[0,-.35,-.1]},OVER={pos:[0,7.6,5.9],look:[0,-.3,.15]},EXPL={pos:[0,8.2,5.5],look:[0,.1,.0]};
+  const cl={clear:[.0045,.012,.016]};
+  const env={keyDir:[-.45,.85,.35],keyCol:[2.6,2.45,2.2],fillDir:[.7,.35,-.5],fillCol:[.12,.42,.5],fog:[.003,.011,.015],fogD:.028,exp:1.05,clear:[0.1,0.2,0.23],time:0,flow:0,speed:0,sternZ:1.9};
+  // clear color = tone-mapped fog
+  {const f=env.fog.map(v=>{let x=v*env.exp;x=Math.max(0,Math.min(1,(x*(2.51*x+.03))/(x*(2.43*x+.59)+.14)));return Math.pow(x,1/2.2)});env.clear=f}
+
+  /* offline renders of the 3D model (used to make thumbnails / gallery images from the model itself) */
+  const sroot=N();const farWater=N({mesh:water.mesh,p:[0,-300,0]});farWater.world=M4.trs(farWater.p,[0,0,0],[1,1,1]);
+  const SOLO={pi:[0,.12,1.9],cam:[0,.38,2.7],gps:[0,.05,1.0],l298n:[0,.08,1.4],motor:[0,.14,1.25],battery:[0,.15,1.9],power:[0,.1,2.4],router:[0,.15,2.3]};
+  const NODE={pi:parts.pi,cam:camG,gps:parts.gps,l298n:parts.l298n,motor:parts.motorL,battery:parts.battery,power:parts.bank,router:routerG};
+  function shootCam(look,dist,az,el,asp,fov){const pos=[look[0]+dist*Math.cos(el)*Math.sin(az),look[1]+dist*Math.sin(el),look[2]+dist*Math.cos(el)*Math.cos(az)];return{pos,view:M4.look(pos,look,[0,1,0]),proj:A.persp(fov||.56,asp,0,0),look}}
+  const API={A,ORDER,anchors,extra,parts,
+   solo(id,w,h){const n=NODE[id],c=SOLO[id];sroot.kids=[n];n.p=[0,0,0];n.r=[0,0,0];n.s=[1,1,1];n.vis=true;n.fade=1;A.size(w,h,1);
+     const az=id==='cam'?Math.PI+.6:id==='router'?Math.PI+.5:.65;
+     const cm=shootCam([0,c[1],0],c[2]*.74,az,.62,w/h);
+     env.time=1;env.flow=0;env.speed=0;A.render(sroot,farWater,cm,env);return canvas.toDataURL('image/png')},
+   ledProj(w,h){const cm=shootCam([0,0,0],7.6,Math.PI,1.5,w/h,.56),VP2=M4.mul(cm.proj,cm.view);
+     return[[-.7,1.9],[-.72,1.85],[.7,1.9],[.72,1.85]].map(q=>{const x=q[0],y=.06,z=q[1],c=VP2;const X=c[0]*x+c[4]*y+c[8]*z+c[12],Y=c[1]*x+c[5]*y+c[9]*z+c[13],W=c[3]*x+c[7]*y+c[11]*z+c[15];return[(X/W*.5+.5)*100,(1-(Y/W*.5+.5))*100]})},
+   scene(name,w,h){A.size(w,h,1);env.time=1;env.flow=0;env.speed=0;boat.p=[0,0,0];boat.r=[0,0,0];
+     pivot.r=[0,0,0];pivot.p=[0,0,1.97];lid.vis=true;wlist.forEach(n=>{n.fade=1;n.vis=true});
+     let cm;
+     if(name==='top')cm=shootCam([0,0,0],7.4,0,1.5,w/h,.56);
+     else if(name==='front')cm=shootCam([0,.1,0],6.2,Math.PI+.35,.38,w/h,.56);
+     else if(name==='rear')cm=shootCam([0,.1,.2],6.2,-.55,.34,w/h,.56);
+     else if(name==='led')cm=shootCam([0,0,0],7.6,Math.PI,1.5,w/h,.56);
+     else{lid.vis=false;cm=shootCam([0,-.3,.1],7.6,0,1.45,w/h,.56)}
+     A.render(root,water,cm,env);return canvas.toDataURL('image/png')},
+   resize(w,h,dpr){SWc=w;SHc=h;A.size(w,h,dpr)},
+   frame(p,t,dt,L){
+     const gl=A.gl;
+     const speed=1-sm(.08,.2,p);
+     flow-=speed*dt*.0021;env.flow=flow;env.speed=speed;env.time=t/1000;
+     // boat float
+     boat.p[1]=Math.sin(t/900)*.018*(.3+.7*speed);boat.r[2]=Math.sin(t/1300)*.012*(.3+.7*speed);boat.r[0]=-.012*speed+Math.sin(t/1100)*.008*speed;
+     // lid
+     const L1=sm(.22,.31,p),L2=sm(.31,.4,p);
+     pivot.r=[L1*.12,0,L1*.14];pivot.p=[-L2*7.5,L1*1.3+L2*.4,1.97];
+     lid.vis=!(L2>=1);
+     // deck parts: ride the lid, then fly in as exploded parts
+     const fly=p>=.395;
+     if(fly&&!detached){detached=true;lid.kids=lid.kids.filter(k=>k!==camG&&k!==routerG);add(boat,camG);add(boat,routerG)}
+     if(!fly&&detached){detached=false;boat.kids=boat.kids.filter(k=>k!==camG&&k!==routerG);add(lid,camG);add(lid,routerG);camG.p=camRest.slice();routerG.p=rtRest.slice();[camG,routerG].forEach(n=>{n.s=[1,1,1];n.r=[0,0,0];n.vis=true})}
+     // exploded view
+     const E={};
+     ORDER.forEach((pi,k)=>{const st=.47+k*.05;E[pi]=sm(st,st+.075,p)});
+     const lat=SWc/SHc<.8?.5:1;
+     const ez=(id,e)=>{const n=parts[id],r=rest[id],x=EX[id];n.p=[r[0]+x[0]*lat*e,r[1]+x[1]*e,r[2]+x[2]*e];n.r[1]=e*.5;const sc=1+.18*e;n.s=[sc,sc,sc]};
+     ez('pi',E[0]);ez('gps',E[2]);ez('l298n',E[3]);ez('motorL',E[4]);ez('motorR',E[4]);ez('battery',E[5]);ez('bank',E[6]);
+     if(fly){
+       const e1=E[1],e7=E[7];
+       const fl=(n,slot,e,base)=>{n.p=[lerp(base[0],slot[0],e),lerp(base[1],slot[1],e),lerp(base[2],slot[2],e)];const sc=lerp(.35,1.15,e);n.s=[sc,sc,sc];n.r=[n===camG?e*1.15:0,e*.35,0];n.vis=e>.015};
+       const cs_=[camSlot[0]*lat,camSlot[1],camSlot[2]],rs_=[rtSlot[0]*lat,rtSlot[1],rtSlot[2]];fl(camG,cs_,e1,[cs_[0],cs_[1]+3.2,cs_[2]]);fl(routerG,rs_,e7,[rs_[0],rs_[1]+3.2,rs_[2]]);
+     }
+     const wf=1-sm(.46,.53,p);wlist.forEach(n=>{n.fade=wf;n.vis=wf>.02});
+     // camera: orbit in spherical coordinates so the move never cuts through the boat
+     const c1=sm(.07,.24,p),c2=sm(.4,.52,p);
+     const sph=(c)=>{const d=V3.sub(c.pos,c.look),r=Math.hypot(d[0],d[1],d[2]);return[Math.atan2(d[0],d[2]),Math.asin(d[1]/r),r]};
+     const S0=sph(HERO),S1=sph(OVER),S2=sph(EXPL);
+     const mix3=(x,y,t)=>[lerp(x[0],y[0],t),lerp(x[1],y[1],t),lerp(x[2],y[2],t)];
+     const s=mix3(mix3(S0,S1,c1),S2,c2);
+     const look=V3.lerp(V3.lerp(HERO.look,OVER.look,c1),EXPL.look,c2);
+     s[0]+=(1-c1)*Math.sin(t/3800)*.22;s[1]+=(1-c1)*Math.sin(t/2900)*.03;
+     const asp=SWc/SHc;const dist=asp<.8?1.5:(asp<1.2?1.15:1);
+     s[2]*=dist;
+     const pos=[look[0]+s[2]*Math.cos(s[1])*Math.sin(s[0]),look[1]+s[2]*Math.sin(s[1]),look[2]+s[2]*Math.cos(s[1])*Math.cos(s[0])];
+     const sh=1-c1;const shx=2*(L.heroCx-SWc/2)/SWc*sh,shy=-2*(L.heroCy-SHc/2)/SHc*sh;
+     const finShy=-2*(L.finCy-SHc/2)/SHc*c1;
+     const proj=A.persp(.56,asp,shx,shy+finShy);
+     const view=M4.look(pos,look,[0,1,0]);
+     VP=M4.mul(proj,view);
+     A.render(root,water,{proj,view,pos},env);
+     // screen anchors
+     const out=anchors.map(a=>project(nodeWorld(a.n,a.o)));
+     const outR=project(nodeWorld(extra.motorR.n,extra.motorR.o));
+     return{pts:out,motorR:outR,E};
+   }};
+  return API;
+}
+
+(function(){
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const sm=(a,b,v)=>{const t=clamp((v-a)/(b-a));return t*t*(3-2*t)};
+const lerp=(a,b,t)=>a+(b-a)*t;
+const nm=p=>T(p.ar,p.en);
+
+/* ---------- language ---------- */
+const root=document.documentElement;
+function setLang(l){
+  root.lang=l; root.dir=l==='ar'?'rtl':'ltr';
+  $('#langBtn').textContent=l==='ar'?'English':'العربية';
+  document.title=l==='ar'?'شلفا SHALFA':'SHALFA';
+  try{localStorage.setItem('shalfa-lang',l)}catch(e){}
+  if(window.__layout)window.__layout();
+}
+let L0='ar'; try{L0=localStorage.getItem('shalfa-lang')||'ar'}catch(e){}
+
+/* ---------- menu ---------- */
+const NAV=[['home','الرئيسية','Home'],['about','عن شلفا','About SHALFA'],['architecture','معمارية النظام','System Architecture'],['hardware','المكونات','Hardware Components'],['software','البرمجيات والذكاء الاصطناعي','Software & AI'],['method','منهجية التشغيل','Operational Methodology'],['innovation','الابتكار','Innovation'],['results','الاختبارات والنتائج','Testing & Results'],['gallery','المعرض','Gallery'],['future','التطوير المستقبلي','Future Development'],['team','فريق المشروع','Project Team'],['contact','تواصل سريع','Quick Contact']];
+$('#menu').innerHTML=`<button class="pill x" id="menuX">✕</button>`+NAV.map((n,i)=>`<a href="#${n[0]}"><small>${String(i+1).padStart(2,'0')}</small>${T(n[1],n[2])}</a>`).join('');
+const menu=$('#menu');
+$('#menuBtn').onclick=()=>menu.hidden=false;
+menu.addEventListener('click',e=>{if(e.target.closest('a')||e.target.id==='menuX')menu.hidden=true});
+$('#langBtn').onclick=()=>setLang(root.lang==='ar'?'en':'ar');
+
+/* ---------- sections ---------- */
+const sec=(id,eye,title,lead,body,band)=>`<section class="s ${band?'band':''}" id="${id}"><div class="${band?'in':''}"><p class="eyebrow">${eye}</p><h2>${title}</h2>${lead?`<p class="lead">${lead}</p>`:''}${body}</div></section>`;
+const S=[];
+
+/* about */
+S.push(sec('about',T('٠١ · عن المشروع','01 · The project'),T('عن شلفا','About SHALFA'),
+ T('نموذج أولي لقارب سطحي غير مأهول متعدد المهام، طوّره ثلاثة مهندسي حاسب. بدأ بقارب تحكم عن بُعد تقليدي، ثم تطوّر بإضافة الإلكترونيات والاستشعار والرؤية الحاسوبية والتحكم بالمحركات وبرمجيات Python.','A multi-purpose unmanned surface vessel prototype developed by three Computer Engineers. It started as a conventional radio-controlled boat and evolved through electronics, sensing, computer vision, motor control and Python software.'),
+ `<div class="grid g2"><div><p>${T('الهدف الأساسي إثبات أن منصة بحرية تقليدية يمكن تحويلها إلى نظام سطحي غير مأهول تجريبي متكامل. المشروع منصة عرض هندسي لنموذج مبني ومبرمج ومُختبَر فعلياً، وليس منتجاً جاهزاً للإنتاج أو للاستخدام القتالي.','The primary objective was to show that a conventional marine platform can become an integrated experimental unmanned surface system. This is an engineering showcase of a physically built, programmed and tested prototype, not a production-ready or combat-ready product.')}</p>
+ <p>${T('مجال التطبيق: التجارب البحرية المضبوطة، والبحث الهندسي، ومفاهيم المراقبة، والمحاكاة التدريبية ذات الطابع الدفاعي.','Application domain: controlled maritime experimentation, engineering research, monitoring concepts and defense-oriented training simulation.')}</p></div>
+ <div><p class="eyebrow" style="margin-bottom:10px">${T('يجمع المشروع','The project combines')}</p><div class="tags">${[['حوسبة مدمجة','Embedded computing'],['رؤية حاسوبية','Computer vision'],['تتبع بصري بمساعدة الذكاء الاصطناعي','AI-assisted visual tracking'],['مراقبة حرارية','Thermal monitoring'],['بنية GPS','GPS infrastructure'],['تحكم يدوي وآلي بالمحركات','Manual and automatic motor control'],['اتصال شبكي','Network communication'],['محاكاة آمنة لأحداث المهمة','Safe mission-event simulation'],['مراقبة عبر الويب','Web-based monitoring']].map(x=>`<span class="tag">${T(x[0],x[1])}</span>`).join('')}</div></div></div>
+ <div class="facts"><div><small>${T('التصنيف','Classification')}</small><b>${T('نموذج أولي / بحث وتطوير هندسي','Prototype / Engineering R&D')}</b></div><div><small>${T('الفريق','Team')}</small><b>${T('٣ مهندسي حاسب','3 Computer Engineers')}</b></div><div><small>${T('المنصة','Platform')}</small><b>SHALFA Marine Hull</b></div><div><small>${T('الحالة','Status')}</small><b>${T('نموذج أولي يعمل','Functional Prototype')}</b></div></div>
+ <div class="note ok">${T('المحاكاة الفيزيائية تستخدم مؤشرات ضوئية وصوتية فقط. لا توجد صواريخ أو أسلحة أو متفجرات في النموذج.','The physical prototype uses light and audio indicators for mission simulation only. There are no missiles, weapons or explosives.')}</div>`));
+
+/* architecture */
+S.push(sec('architecture',T('٠٢ · النظام','02 · The system'),T('معمارية النظام','System Architecture'),
+ T('معالجة موزعة: الـ Raspberry Pi على القارب يتولى التحكم والاستشعار والمراقبة، ولابتوب خارجي يشغّل كشف YOLOv5. اضغط أي مكوّن لقراءة وصفه الموثّق.','Distributed processing: the Raspberry Pi onboard handles control, sensing and monitoring, while an external laptop runs YOLOv5 detection. Click any block to read its documented description.'),
+ `<div class="legend"><span><i></i>${T('تدفق البيانات','Data flow')}</span><span><i style="border-color:var(--cyan)"></i>${T('شبكة محلية (بث / أوامر)','Local network (stream / commands)')}</span><span><i style="border-color:var(--amber)"></i>${T('حراري: عرض فقط','Thermal: display only')}</span></div>
+ <div class="svgwrap"><svg id="arch" viewBox="0 0 1000 530" role="img" aria-label="SHALFA architecture"></svg></div>
+ <div class="card infobox" id="archInfo"></div>`,0));
+
+/* hardware */
+const hwCard=(h,i)=>{
+  const p=h.p?byId[h.p]:null;
+  const img=h.img;
+  const name=p?nm(p):T(h.an,h.en);
+  const fn=p?T(p.fa,p.fe):T(h.fa,h.fe);
+  const specs=p?p.s:h.s;
+  const note=p?p.n:h.note;
+  return `<article class="card hw reveal"><div class="ph ${img?'':'miss'}">${img?`<img loading="lazy" src="img/${img}" alt="">`:`<span>${T('الصورة الأصلية مطلوبة','Authentic photo needed')}</span>`}</div><div class="bd"><div class="id">${String(i+1).padStart(2,'0')} · ${T(h.a,h.e)}</div><h3>${name}</h3><p class="role">${fn}</p>${UL(specs)}${note?`<div class="note" style="font-size:13px;margin-bottom:0">${T(note[0],note[1])}</div>`:''}</div></article>`;
+};
+
+S.push(sec('hardware',T('٠٣ · الأجهزة','03 · Hardware'),T('المكونات','Hardware Components'),
+ T('كل مكوّن موثّق في النموذج الحالي. حيث لا تتوفر صورة أصلية، تظهر خانة تطلبها بدلاً من صورة مولّدة.','Every component documented in the current prototype. Where no authentic photo exists, a placeholder asks for one instead of showing a generated image.'),
+ `<div class="grid g3">${HWL.map(hwCard).join('')}</div>`,1));
+
+/* software & AI */
+const kc=[['W','للأمام','Forward'],['S','للخلف','Backward'],['A','يسار','Left'],['D','يمين','Right'],['X','إيقاف','Stop'],['C','وضع يدوي','Manual mode'],['Z','وضع آلي','Automatic mode']];
+S.push(sec('software',T('٠٤ · البرمجيات','04 · Software'),T('البرمجيات والذكاء الاصطناعي','Software & AI'),
+ T('Python هي اللغة الرئيسية. الـ Pi يتولى التحكم والاستشعار والبث، واللابتوب يتولى كشف الأجسام.','Python is the main language. The Pi handles control, sensing and streaming; the laptop handles object detection.'),
+ `<div class="grid g2">
+ <div class="card"><h3 class="mono" style="font-size:15px">motor_server.py</h3>${UL([['استقبال أوامر UDP على المنفذ 5005','Receives UDP commands on port 5005'],['تحكم يدوي وآلي، وتوجيه تفاضلي','Manual and automatic control, differential steering'],['تحكم GPIO وPWM بالمحركات','GPIO motor control and PWM'],['سلوك Smart Escape','Smart Escape behaviour']])}</div>
+ <div class="card"><h3>${T('واجهة المراقبة (HTTP 8080)','Web monitoring (HTTP 8080)')}</h3><div class="tags">${['/','/stream.mjpg','/thermal.mjpg','/health','/status'].map(x=>`<span class="tag mono">${x}</span>`).join('')}</div><p style="margin-top:12px">${T('تجمع بث الكاميرا والعرض الحراري ومعلومات GPS وحالة النظام.','Combines the camera stream, thermal view, GPS information and system status.')}</p></div>
+ <div class="card"><h3>${T('خدمة GPS (HTTP 8088)','GPS service (HTTP 8088)')}</h3><div class="tags">${['/gps','/gps?key=KEY','/status'].map(x=>`<span class="tag mono">${x}</span>`).join('')}</div><p style="margin-top:12px">${T('تدعم تغذية GPS محاكاة ووصولاً محمياً بمفتاح إلى GPS الحقيقي.','Supports a simulated GPS feed and a key-protected real-GPS access mode.')}</p></div>
+ <div class="card"><h3>${T('برمجية Arduino','Arduino firmware')}</h3>${UL([['يستقبل أوامر تسلسلية من الـ Pi','Receives serial commands from the Pi'],['R: مؤشرات الجهة اليمنى، L: مؤشرات الجهة اليسرى','R: right-side LEDs, L: left-side LEDs'],['النمط: خمس وميضات قصيرة ثم وميض أطول','Pattern: five short flashes then one longer flash']])}</div></div>
+
+ <h3 class="sub-h">${T('الرؤية الحاسوبية YOLOv5n','Computer vision · YOLOv5n')}</h3>
+ <div class="grid g2"><div><ol class="steps" style="grid-template-columns:1fr">${[['كاميرا Raspberry Pi تلتقط المشهد','The Raspberry Pi Camera captures the scene'],['يصل بث MJPEG إلى اللابتوب عبر الشبكة','The MJPEG stream reaches the laptop over the network'],['اللابتوب يعالج الإطارات بـ YOLOv5n','The laptop processes frames with YOLOv5n'],['يتعرف على الفئات المضبوطة','Configured object classes are identified'],['يُستخدم الموضع الأفقي للهدف لقرارات التوجيه','Horizontal target position drives steering decisions'],['تُرسل أوامر الحركة إلى الـ Pi عبر UDP','Movement commands go to the Pi over UDP'],['خادم المحركات ينفّذ الأوامر','The motor server executes the commands']].map(s=>`<li>${T(s[0],s[1])}</li>`).join('')}</ol></div>
+ <div><div class="tblwrap"><table><thead><tr><th>${T('الإعداد','Setting')}</th><th>${T('القيمة','Value')}</th></tr></thead><tbody>${[['Model','yolov5n.pt'],['Classes','Person (0) · Boat (9)'],['Image size','320'],['Confidence','0.5'],['IoU','0.25'],['Alignment deadband','0.12'],['Distance threshold','0.18'],['Max frame age','0.8 s']].map(r=>`<tr><td>${r[0]}</td><td class="mono">${r[1]}</td></tr>`).join('')}</tbody></table></div>
+ <button type="button" class="gi shot" data-lb="img/yolo-detection.jpg" style="aspect-ratio:903/682;margin-top:12px"><img loading="lazy" src="img/yolo-detection.jpg" alt="YOLOv5 detection frame"><span>${T('لقطة حقيقية من كشف YOLOv5','Real YOLOv5 detection frame')}</span></button></div></div>
+
+ <h3 class="sub-h">${T('أوضاع التحكم','Control modes')}</h3>
+ <div class="grid g2"><div class="card"><h3>${T('التحكم اليدوي: لوحة المفاتيح','Manual control: keyboard')}</h3><div class="keys">${kc.map(k=>`<div class="key"><kbd>${k[0]}</kbd>${T(k[1],k[2])}</div>`).join('')}</div><p style="margin-top:14px;font-size:13px">${T('الموقع تعليمي ولا يتحكم بالقارب الحقيقي.','This website is educational and does not control the real boat.')}</p></div>
+ <div class="card"><h3>${T('الوضع الآلي وSmart Escape','Automatic mode & Smart Escape')}</h3><p>${T('الوضع الآلي قدرة برمجية منفّذة: محاذاة بصرية بمساعدة الذكاء الاصطناعي وتوليد أوامر محركات. عُرضت في الاختبارات، ولم يُتحقق منها كملاحة بحرية ذاتية كاملة.','Automatic mode is an implemented software capability: AI-assisted visual alignment and motor-command generation. It was demonstrated in testing, not validated as full autonomous marine navigation.')}</p>
+ <div class="escape"><div class="esc1">${T('٥ ث بلا تقدم','~5 s no progress')}</div><div class="esc2">${T('رجوع ~٥ ث','reverse ~5 s')}</div><div class="esc3">${T('دوران يسار','rotate left')}</div></div>
+ <p style="font-size:13px;margin:0">${T('روتين استرداد منفّذ. لم يثبت نجاحه في كل ظروف العوائق الواقعية.','An implemented recovery routine, not proven under all real-world obstacle conditions.')}</p></div></div>
+
+ <h3 class="sub-h">${T('وضعا GPS','GPS modes')}</h3>
+ <div class="grid g2 gmodes"><div class="card real"><span class="status st-part">${T('محدود','Limited')}</span><h3>${T('GPS حقيقي','Real GPS')}</h3><p>${T('مخصص لإحداثيات NEO-8M الفعلية، ويتطلب مفتاحاً مصرحاً عبر الخدمة المحمية.','Intended for actual NEO-8M coordinates. Requires an authorized key through the protected service.')}</p></div>
+ <div class="card sim"><span class="status st-plan">${T('محاكاة','Simulated')}</span><h3>${T('GPS محاكى','Simulated GPS')}</h3><p>${T('قيم إحداثيات محاكاة تتحدث كل ٣ إلى ٥ ثوانٍ تقريباً، للاختبار والعرض.','Simulated coordinate values refreshed roughly every 3 to 5 seconds, for testing and demonstration.')}</p><p style="margin:0">${T('تُعلَّم دائماً على أنها محاكاة، ولا تُعرض كموقع حقيقي للقارب.','Always labelled as simulated and never shown as the boat\'s genuine position.')}</p></div></div>`,0));
+
+/* method */
+S.push(sec('method',T('٠٥ · التشغيل','05 · Operation'),T('منهجية التشغيل','Operational Methodology'),
+ T('أربع طبقات. الحراري للعرض فقط ولا يغذّي YOLO، ومعالجة YOLO خارجية على اللابتوب لا على متن القارب.','Four layers. Thermal is for display only and does not feed YOLO, and YOLO processing runs on the external laptop, not onboard.'),
+ `<div class="layers">${[['SENSING','طبقة الاستشعار','Sensing layer',[['الكاميرا الرئيسية','Main camera'],['حساس MLX90640 الحراري','MLX90640 thermal sensor'],['وحدة NEO-8M GPS','NEO-8M GPS module']]],['PROCESSING','طبقة المعالجة','Processing layer',[['Raspberry Pi 4 (على متن القارب)','Raspberry Pi 4 (onboard)'],['YOLOv5n على لابتوب (خارجي)','YOLOv5n on a laptop (external)'],['منطق محاذاة الهدف','Target alignment logic'],['منطق Smart Escape','Smart Escape logic']]],['CONTROL','طبقة التحكم','Control layer',[['مشغّل L298N','L298N motor driver'],['محركا DC','Twin DC motors'],['Arduino Nano','Arduino Nano'],['محاكاة LED','LED simulation']]],['COMMUNICATION','طبقة الاتصال','Communication layer',[['شبكة محلية','Local network'],['أوامر UDP','UDP commands'],['مراقبة HTTP','HTTP monitoring'],['USB تسلسلي','USB serial'],['صوت بلوتوث','Bluetooth audio']]]].map(l=>`<div class="layer reveal"><h3>${l[0]}<br><span style="font-size:13px;color:var(--fg2);text-transform:none;letter-spacing:0">${T(l[1],l[2])}</span></h3>${UL(l[3])}</div>`).join('')}</div>
+ <h3 class="sub-h">${T('تسلسل العمل في الوضع الآلي','Automatic-mode sequence')}</h3>
+ <ol class="steps">${[['الكاميرا تلتقط','Camera captures'],['بث MJPEG عبر الشبكة','MJPEG over the network'],['YOLOv5n على اللابتوب','YOLOv5n on the laptop'],['محاذاة أفقية مع منطقة ميتة','Horizontal alignment with deadband'],['أمر UDP إلى المنفذ 5005','UDP command to port 5005'],['motor_server.py ينفّذ','motor_server.py executes'],['L298N يشغّل المحركين','L298N drives the motors']].map(s=>`<li>${T(s[0],s[1])}</li>`).join('')}</ol>
+ <div class="note" style="margin-top:20px">${T('خط الحرارة منفصل: MLX90640 ← Pi ← /thermal.mjpg ← الواجهة. لا يمر عبر YOLOv5.','The thermal path is separate: MLX90640 → Pi → /thermal.mjpg → web console. It never passes through YOLOv5.')}</div>`,1));
+
+/* innovation */
+const INNO=[['الـ GPS المزدوج','Dual-Mode GPS','وضعان حقيقي ومحاكى، مع وصول بمفتاح إلى الإحداثيات الحقيقية.','Real and simulated modes, with key-controlled access to real coordinates.'],
+['Smart Escape','Smart Escape','استرداد تلقائي بالرجوع ثم الدوران عند انعدام التقدم.','Automatic recovery by reversing and rotating when forward progress stops.'],
+['قفل الهدف البصري','Visual Target Lock','كشف YOLOv5n مع منطق محاذاة أفقية وأوامر محركات.','YOLOv5n detection with horizontal alignment logic and motor commands.'],
+['محاكاة المهمة الآمنة','Safe Mission Simulation','محاكاة أحداث بمؤشرات LED وصوت، بلا أسلحة حقيقية.','Event simulation with LEDs and audio, without real weapons.'],
+['واجهة ويب موحدة','Unified Web Console','واجهة على الـ Pi تجمع GPS وبث الكاميرا والعرض الحراري وحالة النظام.','A Pi-hosted interface combining GPS, camera streaming, thermal view and system status.']];
+const ang=[-90,-18,54,126,198].map(a=>a*Math.PI/180);
+S.push(sec('innovation',T('٠٦ · الابتكار','06 · Innovation'),T('الابتكارات الأساسية','Core Innovations'),'',
+ `<div class="svgwrap"><svg viewBox="0 0 800 440" role="img" aria-label="Innovation diagram"><circle cx="400" cy="220" r="82" fill="#0b2a2a" stroke="#0B5142" stroke-width="2"/><image href="img/logo.png" x="330" y="150" width="140" height="140"/>${INNO.map((n,i)=>{const x=400+Math.cos(ang[i])*270,y=220+Math.sin(ang[i])*165;return `<path class="flow" d="M400 220 L${x.toFixed(0)} ${y.toFixed(0)}" style="opacity:.55"/><g class="nd"><rect x="${(x-92).toFixed(0)}" y="${(y-24).toFixed(0)}" width="184" height="48" rx="8"/><text x="${x.toFixed(0)}" y="${(y+5).toFixed(0)}" text-anchor="middle">${TS(n[0],n[1])}</text></g>`}).join('')}</svg></div>
+ <div class="inno">${INNO.map((n,i)=>`<div class="card reveal"><div class="n">0${i+1}</div><h3>${T(n[0],n[1])}</h3><p style="margin:0">${T(n[2],n[3])}</p></div>`).join('')}</div>
+ <h3 class="sub-h">${T('محاكاة المهمة الآمنة','Safe Mission Simulation')}</h3>
+ <div class="card ledsim"><div class="ledboat" id="ledboat"><img class="lb-img" src="img/r3d-led.png" alt=""><span class="led" data-s="L" style="left:80.5%;top:7%"></span><span class="led" data-s="L" style="left:81.4%;top:8.1%"></span><span class="led" data-s="R" style="left:19.5%;top:7%"></span><span class="led" data-s="R" style="left:18.6%;top:8.1%"></span></div>
+ <div><p>${T('نظام تدريبي يستخدم مؤشرات LED ومؤثرات صوتية لتمثيل أحداث المهمة: Arduino Nano، مؤشرات يمين ويسار، أوامر تسلسلية، أنماط وميض محددة، وسماعة بلوتوث.','A training-oriented system that uses LED indicators and audio effects to represent mission events: Arduino Nano, right and left indicators, serial commands, predefined flash patterns and a Bluetooth speaker.')}</p>
+ <div class="note ok">${T('لا توجد صواريخ أو أسلحة أو متفجرات أو حمولات تدميرية.','No actual missiles, weapons, explosives or destructive payloads are installed.')}</div>
+ <p class="mono" style="font-size:12px;color:var(--fg3)">${T('عرض توضيحي على الموقع فقط، غير متصل بالقارب:','Website demo only, not connected to the boat:')}</p>
+ <div class="btns"><button data-run="R">R · ${T('يمين','right')}</button><button data-run="L">L · ${T('يسار','left')}</button><button class="boom" data-boom>💥 ${T('محاكاة الانفجار','Explosion simulation')}</button><button data-boomreset hidden>↺ ${T('إعادة القارب','Rebuild boat')}</button></div>
+ <p class="mono" style="font-size:11.5px;color:var(--fg3);margin:10px 0 0">${T('مؤثر بصري وصوتي فقط على الموقع لتمثيل نهاية المهمة، لا علاقة له بأي حمولة حقيقية.','A visual and audio effect on this page only, representing a mission end state. It has nothing to do with any real payload.')}</p></div></div>`,0));
+
+/* results */
+const RES=[['ok','الحركة اليدوية','Manual movement','عُرض','Demonstrated','اختُبر التوجيه والحركة اليدويان على الماء.','Manual steering and movement were tested on water.'],
+['ok','الرؤية الحاسوبية','Computer vision','عُرض','Demonstrated','عُرض كشف YOLOv5 وسلوك التتبع الآلي في بيئة اختبار اللابتوب.','YOLOv5 object detection and automatic tracking were shown in the laptop-based test environment.'],
+['ok','المراقبة الحرارية','Thermal monitoring','عُرض','Demonstrated','عُرض البث الحراري لـ MLX90640 عبر واجهة الويب.','MLX90640 thermal visualization was displayed through the web interface.'],
+['ok','مراقبة الويب','Web monitoring','عُرض','Demonstrated','دُمجت بثوث الكاميرا ومعلومات المراقبة في واجهة ويب.','Camera streams and monitoring information were integrated into a web interface.'],
+['part','GPS','GPS','تحقق جزئي','Partially verified','استُخدمت إحداثيات محاكاة للعرض.','Simulated coordinates were used for demonstration.'],
+['ok','محاكاة LED','LED simulation','عُرض','Demonstrated','عُرضت محاكاة أحداث آمنة بمؤشرات LED.','Safe LED-based event simulation was shown.']];
+const NM=[['السرعة القصوى','Maximum speed'],['تحمّل البطارية','Battery endurance'],['دقة الكشف','Detection accuracy'],['دقة تحديد موقع GPS','GPS positioning accuracy'],['نسبة نجاح المهام الذاتية','Autonomous mission success rate'],['مدى الاتصال','Communication range'],['مسافة الكشف الحراري','Thermal detection distance']];
+S.push(sec('results',T('٠٧ · الاختبارات','07 · Testing'),T('الاختبارات والنتائج','Testing & Results'),T('النتائج مبنية على العروض الموثّقة فقط. ما لم يُقَس لا نضع له رقماً.','Based strictly on documented demonstrations. Anything not measured has no number here.'),
+ `<div class="grid g3">${RES.map(r=>`<div class="card reveal"><span class="status st-${r[0]}">${T(r[3],r[4])}</span><h3>${T(r[1],r[2])}</h3><p style="margin:0">${T(r[5],r[6])}</p></div>`).join('')}</div>
+ <h3 class="sub-h">${T('قياسات الأداء','Performance measurements')}</h3>
+ <div class="tblwrap"><table><thead><tr><th>${T('المقياس','Metric')}</th><th>${T('القيمة','Value')}</th></tr></thead><tbody>${NM.map(r=>`<tr><td>${T(r[0],r[1])}</td><td class="mono" style="color:var(--fg3)">${T('غير مقاس','Not Measured')}</td></tr>`).join('')}</tbody></table></div>`,1));
+
+/* gallery */
+const GAL=[['r3d-top.png','مجسم 3D · منظر علوي','3D model · top view'],['r3d-front.png','مجسم 3D · منظر أمامي','3D model · front view'],['r3d-rear.png','مجسم 3D · المؤخرة والراوتر','3D model · stern and router'],['r3d-inside.png','مجسم 3D · الغطاء مرفوع والمكونات الداخلية','3D model · lid removed, internal components']];
+const MISS=[['03_Water_Test.mp4','اختبار الماء','Water test'],['04_YOLO_Detection.mp4','كشف YOLOv5','YOLOv5 detection'],['05_Thermal.mp4','المراقبة الحرارية','Thermal monitoring'],['06_Web_Interface.mp4','واجهة الويب','Web interface'],['07_LED_Simulation.mp4','محاكاة LED','LED simulation']];
+S.push(sec('gallery',T('٠٨ · الوسائط','08 · Media'),T('المعرض','Gallery'),T('لقطات من المجسم ثلاثي الأبعاد للقارب. ملفات الفيديو الأصلية لم تُرفع بعد، وتظهر خانات تطلبها.','Renders of the 3D model of the boat. The original videos have not been uploaded yet, so placeholders ask for them.'),
+ `<div class="gal">${GAL.map((g,i)=>`<button class="gi" data-lb="img/${g[0]}"><img loading="lazy" src="img/${g[0]}" alt=""><span>${T(g[1],g[2])}</span></button>`).join('')}${MISS.map(m=>`<div class="gi miss"><div><b>${T(m[1],m[2])}</b>${T('أرسل الملف الأصلي','Send the authentic file')}<br><code>${m[0]}</code></div></div>`).join('')}</div>`,0));
+
+/* future */
+const FUT=[['تحسين موثوقية GPS','Improved GPS reliability','تحسين الحصول الفعلي على إشارة GPS وتحديد الموقع.','Improve actual GPS acquisition and positioning reliability.'],
+['ملاحة ذاتية متقدمة','Advanced autonomous navigation','تطوير ملاحة وتعامل أقوى مع العوائق.','Develop more robust navigation and obstacle handling.'],
+['معالجة ذكاء اصطناعي على متن القارب','Onboard AI processing','ترقية الحاسب المدمج ليشغّل الاستدلال مباشرة على القارب. حالياً YOLOv5 يعمل على لابتوب خارجي.','Upgrade the onboard computer to run inference on the vessel. Today YOLOv5 runs on an external laptop.'],
+['العودة وإعادة التعبئة','Mission return and reload workflow','استكشاف مسار عودة محاكى إلى القاعدة عند نفاد موارد المحاكاة وعدم وجود هدف أمامي. فكرة مستقبلية وليست قدرة مُتحقق منها.','Explore a simulated return-to-base workflow when simulation resources are depleted and no target is ahead. A future concept, not a verified capability.'],
+['اختبارات موسعة','Expanded testing','اختبارات بحرية منظمة وجمع بيانات أداء قابلة للقياس.','Structured marine testing and collection of measurable performance data.']];
+S.push(sec('future',T('٠٩ · الخطة','09 · Roadmap'),T('التطوير المستقبلي','Future Development'),T('أهداف مستقبلية، منفصلة بوضوح عن القدرات المنفّذة. بلا مواعيد أو نسب إنجاز.','Future goals, clearly separate from implemented capabilities. No deadlines or completion percentages.'),
+ `<div class="road">${FUT.map((f,i)=>`<div class="it reveal"><div class="dot">17.${i+1}</div><div><span class="status st-plan">${T('مخطط','Planned')}</span><h3>${T(f[0],f[1])}</h3><p>${T(f[2],f[3])}</p></div></div>`).join('')}</div>`,1));
+
+/* team */
+const TEAM=[['FA','فارس ناصر الغامدي','Faris Nasser Al-Ghamdi','team-faris.jpg','https://faris-al-danish.github.io/card.html'],['AA','عبدالله محمد الغامدي','Abdullah Mohammed Al-Ghamdi','team-abdullah.jpg',''],['MA','محمد قاسم الحسين','Mohammed Qasem Al-Hussain','team-mohammed.jpg','']];
+S.push(sec('team',T('١٠ · الفريق','10 · Team'),T('فريق المشروع','Project Team'),T('طوّر الفريق المشروع بشكل مشترك.','The team developed the project jointly.'),
+ `<div class="team">${TEAM.map(m=>`<div class="card mem reveal"><div class="av"><img src="img/${m[3]}" alt="${m[2]}" loading="lazy"></div><h3>${T(m[1],m[2])}</h3><div class="role">${T('مهندس حاسب','Computer Engineer')}</div>${m[4]?`<a class="btn ghost mem-contact" href="${m[4]}" target="_blank" rel="noopener noreferrer">${T('تواصل','Contact')}</a>`:''}</div>`).join('')}</div>
+ <h3 class="sub-h">${T('المواصفات الفنية','Technical specifications')}</h3>
+ <div class="tblwrap"><table><thead><tr><th>${T('الفئة','Category')}</th><th>${T('المواصفة الموثّقة','Documented specification')}</th></tr></thead><tbody>${SPECS.map(r=>`<tr><td>${T(r[0],r[1])}</td><td class="mono">${r[2]}</td></tr>`).join('')}</tbody></table></div>`,0));
+
+$('#sections').innerHTML=S.join('');
+
+/* ---------- architecture diagram ---------- */
+(function(){
+  const svg=$('#arch');
+  let h=`<defs><marker id="ah" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#00B86B"/></marker></defs>
+  <rect class="zone" x="16" y="36" width="690" height="480" rx="14"/><text class="zl" x="32" y="62">${TS('على متن القارب','ON THE VESSEL')}</text>
+  <rect class="zone lap" x="730" y="150" width="256" height="300" rx="14"/><text class="zl" x="746" y="176" style="fill:#19B6C8">${TS('لابتوب خارجي','EXTERNAL LAPTOP')}</text>`;
+  EDGES.forEach(e=>{h+=`<path class="flow ${e[1]} ${e[2]?'rev':''}" d="${e[0]}" ${e[1]==='th'?'':'marker-end="url(#ah)"'}/>`});
+  h+=`<text class="el" x="525" y="224">${TS('بث MJPEG (عبر الراوتر)','MJPEG stream (via router)')}</text><text class="el" x="560" y="258">${TS('أوامر UDP 5005','UDP 5005 commands')}</text>
+  <text class="el" style="fill:#E8B04B" x="40" y="262">${TS('الحراري: عرض فقط، لا يدخل YOLO','Thermal: display only, never sent to YOLO')}</text>`;
+  NODES.forEach(n=>{
+    const cx=n.x+n.w/2;
+    h+=`<g class="nd ${n.lap?'laptop':''}" data-id="${n.id}" tabindex="0" role="button"><rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="8"/>`;
+    if(n.id==='pi'){h+=`<text x="${cx}" y="${n.y+34}" text-anchor="middle" style="font-size:16px">Raspberry Pi 4</text><text class="s2 mono" x="${cx}" y="${n.y+62}" text-anchor="middle">motor_server.py · UDP 5005</text><text class="s2 mono" x="${cx}" y="${n.y+82}" text-anchor="middle">web · HTTP 8080</text><text class="s2 mono" x="${cx}" y="${n.y+102}" text-anchor="middle">GPS svc · HTTP 8088</text><text class="s2" x="${cx}" y="${n.y+130}" text-anchor="middle" style="fill:#00B86B">${TS('على متن القارب','onboard')}</text>`}
+    else h+=`<text x="${cx}" y="${n.y+(n.s?24:34)}" text-anchor="middle">${TS(n.a,n.e)}</text>${n.s?`<text class="s2 mono" x="${cx}" y="${n.y+n.h-14}" text-anchor="middle">${n.s}</text>`:''}`;
+    h+=`</g>`;
+  });
+  svg.innerHTML=h;
+  const box=$('#archInfo');
+  function show(id){
+    const n=NODES.find(x=>x.id===id); $$('.nd',svg).forEach(g=>g.classList.toggle('sel',g.dataset.id===id));
+    box.innerHTML=`<h3>${T(n.a,n.e)}</h3><div>${T(n.d[0],n.d[1])}</div>`;
+    box.style.display='block';
+  }
+  svg.addEventListener('click',e=>{const g=e.target.closest('.nd');if(g)show(g.dataset.id)});
+  svg.addEventListener('keydown',e=>{if(e.key==='Enter'){const g=e.target.closest('.nd');if(g)show(g.dataset.id)}});
+  show('pi');
+})();
+
+/* ---------- gallery lightbox / modal / LED ---------- */
+const lb=$('#lb');
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-lb]'); if(g){$('img',lb).src=g.dataset.lb;lb.hidden=false;return}
+  if(e.target.closest('#lbx')||e.target===lb){lb.hidden=true}
+  const pt=e.target.closest('[data-part]'); if(pt){openPart(+pt.dataset.part)}
+  if(e.target.closest('#mx')||e.target.id==='modal'){$('#modal').hidden=true}
+  const r=e.target.closest('[data-run]'); if(r)runLed(r.dataset.run);
+  if(e.target.closest('[data-boom]'))boom(); if(e.target.closest('[data-boomreset]'))boomReset();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){lb.hidden=true;$('#modal').hidden=true;menu.hidden=true}});
+function openPart(i){
+  const p=PARTS[i];
+  $('#mbody').innerHTML=`<div class="mi"><img src="img/${p.img}" alt=""></div><div class="mt"><div class="eyebrow">${String(i+1).padStart(2,'0')}${p.deck?' · '+T('على سطح القارب','On the deck'):''}</div><h3>${nm(p)}</h3><p>${T(p.fa,p.fe)}</p>${UL(p.s)}${p.n?`<div class="note" style="font-size:13px;margin-bottom:0">${T(p.n[0],p.n[1])}</div>`:''}</div>`;
+  $('#modal').hidden=false;
+}
+let ledBusy=false,boomBusy=false;
+function boomReset(){const b=$('#ledboat');b.querySelectorAll('.shard,.fxc,.flash').forEach(n=>n.remove());b.querySelector('.lb-img').style.visibility='';b.classList.remove('shake');$('[data-boomreset]').hidden=true;$('[data-boom]').disabled=false;boomBusy=false}
+function boom(){
+  if(boomBusy)return;boomBusy=true;
+  const b=$('#ledboat'),img=b.querySelector('.lb-img'),W=b.clientWidth,H=b.clientHeight;
+  $('[data-boom]').disabled=true;
+  // blast sound (synthesised, no files)
+  try{const AC=window.AudioContext||window.webkitAudioContext,ac=new AC(),len=ac.sampleRate*1.6,buf=ac.createBuffer(1,len,ac.sampleRate),d=buf.getChannelData(0);
+    for(let i=0;i<len;i++){const t=i/ac.sampleRate;d[i]=(Math.random()*2-1)*Math.exp(-t*3.2)}
+    const src=ac.createBufferSource();src.buffer=buf;const f=ac.createBiquadFilter();f.type='lowpass';f.frequency.setValueAtTime(1800,ac.currentTime);f.frequency.exponentialRampToValueAtTime(90,ac.currentTime+1.4);
+    const g=ac.createGain();g.gain.value=.55;src.connect(f);f.connect(g);g.connect(ac.destination);src.start()}catch(_){}
+  // warning flashes on the LEDs, then detonate
+  const leds=$$('.led');let n=0;const iv=setInterval(()=>{leds.forEach(l=>l.classList.toggle('on',n%2==0));n++;if(n>7){clearInterval(iv);go()}},110);
+  function go(){
+    leds.forEach(l=>l.classList.add('on'));
+    b.classList.add('shake');
+    // flash
+    const fl=document.createElement('div');fl.className='flash';b.appendChild(fl);fl.animate([{opacity:.95},{opacity:0}],{duration:520,easing:'ease-out'}).onfinish=()=>fl.remove();
+    // hull shards
+    img.style.visibility='hidden';
+    const cuts=[[[0,0],[55,0],[48,30],[0,34]],[[55,0],[100,0],[100,38],[48,30]],[[0,34],[48,30],[44,62],[0,66]],[[48,30],[100,38],[100,70],[44,62]],[[0,66],[44,62],[56,100],[0,100]],[[44,62],[100,70],[100,100],[56,100]]];
+    cuts.forEach((c,i)=>{const s=document.createElement('div');s.className='shard';s.style.cssText=`background-image:url(img/r3d-led.png);clip-path:polygon(${c.map(p=>p[0]+'% '+p[1]+'%').join(',')})`;b.appendChild(s);
+      const cx=c.reduce((q,p)=>q+p[0],0)/4-50,cy=c.reduce((q,p)=>q+p[1],0)/4-50,k=1.4+Math.random()*.9;
+      s.animate([{transform:'translate(0,0) rotate(0)',opacity:1,filter:'brightness(2.2)'},{transform:`translate(${cx*k*3.2}px,${cy*k*3.2}px) rotate(${(Math.random()-.5)*260}deg)`,opacity:0,filter:'brightness(.4)'}],{duration:1700+Math.random()*500,easing:'cubic-bezier(.12,.7,.3,1)',fill:'forwards'})});
+    // fireball, shockwave, sparks and smoke on a canvas
+    const cv=document.createElement('canvas');cv.className='fxc';const dpr=Math.min(2,devicePixelRatio||1);cv.width=W*3*dpr;cv.height=H*1.6*dpr;b.appendChild(cv);
+    const x=cv.getContext('2d');x.scale(dpr,dpr);const CX=W*1.5,CY=H*.8-H*.0;
+    const P=[];for(let i=0;i<150;i++){const a=Math.random()*6.283,v=1+Math.random()*7;P.push({x:CX+(Math.random()-.5)*W*.2,y:CY+(Math.random()-.5)*H*.2,vx:Math.cos(a)*v,vy:Math.sin(a)*v-1.2,l:0,m:50+Math.random()*60,r:1+Math.random()*2.4,k:Math.random()<.7?'s':'m'})}
+    let f=0;(function tick(){f++;x.clearRect(0,0,W*3,H*1.6);
+      const t=f/110,fb=Math.min(1,f/14);
+      // shockwave
+      x.strokeStyle=`rgba(255,220,170,${Math.max(0,.7-t*.9)})`;x.lineWidth=6*(1-t)+1;x.beginPath();x.arc(CX,CY,20+t*W*1.3,0,6.283);x.stroke();
+      // fireball
+      const R=(30+Math.sin(Math.min(1,t*1.8)*Math.PI/2)*W*.42)*fb;
+      if(t<1.1){const g=x.createRadialGradient(CX,CY,0,CX,CY,R);const al=Math.max(0,1-t*.95);g.addColorStop(0,`rgba(255,250,220,${al})`);g.addColorStop(.25,`rgba(255,190,60,${al*.95})`);g.addColorStop(.6,`rgba(230,70,20,${al*.65})`);g.addColorStop(1,'rgba(60,20,10,0)');x.fillStyle=g;x.beginPath();x.arc(CX,CY,R,0,6.283);x.fill()}
+      P.forEach(p=>{p.l++;p.x+=p.vx;p.y+=p.vy;p.vx*=.985;p.vy=p.vy*.985+(p.k==='s'?.05:-.02);const a=Math.max(0,1-p.l/p.m);if(a<=0)return;
+        if(p.k==='s'){x.fillStyle=`rgba(255,${160+Math.random()*80|0},60,${a})`;x.beginPath();x.arc(p.x,p.y,p.r,0,6.283);x.fill()}
+        else{x.fillStyle=`rgba(40,44,48,${a*.35})`;x.beginPath();x.arc(p.x,p.y,p.r*6+p.l*.25,0,6.283);x.fill()}});
+      if(f<140)requestAnimationFrame(tick);else{$('[data-boomreset]').hidden=false;b.classList.remove('shake');leds.forEach(l=>l.classList.remove('on'))}
+    })();
+    setTimeout(()=>b.classList.remove('shake'),700);
+  }
+}
+function runLed(side){
+  if(ledBusy)return; ledBusy=true;
+  const leds=$$('.led[data-s="'+side+'"]'); let t=0;
+  const set=(on,at)=>setTimeout(()=>leds.forEach(l=>l.classList.toggle('on',on)),at);
+  for(let i=0;i<5;i++){set(true,t);t+=140;set(false,t);t+=140}
+  set(true,t+100);t+=100+700;set(false,t);setTimeout(()=>ledBusy=false,t+50);
+}
+
+/* ---------- reveal ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.remove('pre');io.unobserve(e.target)}}),{rootMargin:'0px 0px -8% 0px'});
+$$('.reveal').forEach(el=>{const r=el.getBoundingClientRect();if(r.top>innerHeight){el.classList.add('pre');io.observe(el)}});
+
+/* ---------- the journey ---------- */
+const track=$('.track'),stick=$('.stick'),boat=$('#boat'),lid=$('.lid'),hull=$('.hull'),scan=$('.scan'),cv=$('#water'),ctx=cv.getContext('2d');
+const capEl=$('#cap'),cue=$('.cue'),copy=$('.hero-copy'),prog=$('.prog i'),spotsEl=$('#spots'),tilesEl=$('#tiles'),leadSvg=$('#leaders');
+const ORDER=[0,5,1,6,2,3,4,7]; // fly-out order (alternating sides)
+let SW,SH,desk,H,HW,heroCx,heroCy,finCy,dpr=1,rtl=false,tw=300,TH=122;
+const ox=[],oy=[],tl=[],tt=[];
+const spots=[],tiles=[],leaders=[];
+
+PARTS.forEach((p,i)=>{
+  const t=document.createElement('button');t.className='tile';t.dataset.part=i;
+  t.innerHTML=`<span class="no">${i+1}</span><img src="img/${p.img}" alt=""><span class="tx"><b>${nm(p)}</b><p>${T(p.fa,p.fe)}</p>${p.deck?`<span class="ondeck">${T('على سطح القارب','ON THE DECK')}</span>`:''}</span>`;
+  tilesEl.appendChild(t);tiles.push(t);
+  const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('pathLength','1');leadSvg.appendChild(path);leaders.push(path);
+  p.o.forEach((pt,k)=>{const s=document.createElement('div');s.className='spot'+(p.deck?' sq':'');s.textContent=k===0?i+1:'';spotsEl.appendChild(s);spots.push({el:s,i,k,pt})});
+});
+$('#partsM').innerHTML=`<h2>${T('القطع من الداخل','The parts inside')}</h2>`+PARTS.map((p,i)=>`<button class="pm" data-part="${i}"><img loading="lazy" src="img/${p.img}" alt=""><span><span class="no">${String(i+1).padStart(2,'0')}${p.deck?' · '+T('على السطح','ON DECK'):''}</span><b>${nm(p)}</b><p>${T(p.fa,p.fe)}</p></span></button>`).join('');
+
+function layout(){
+  SW=stick.clientWidth;SH=stick.clientHeight;rtl=root.dir==='rtl';
+  desk=SW>=980&&SH>=680;
+  H=desk?SH*0.76:SH*0.5;HW=H*0.616;
+  finCy=desk?SH*0.55:SH*0.5;
+  heroCx=desk?(rtl?SW*0.32:SW*0.68):SW/2;heroCy=desk?finCy:SH*0.73;
+  boat.style.width=HW+'px';boat.style.height=H+'px';
+  if(G){G.resize(SW,SH,Math.min(devicePixelRatio||1,SW<700?1.5:1.75))}
+  dpr=Math.min(devicePixelRatio||1,1.5);cv.width=SW*dpr;cv.height=SH*dpr;
+  leadSvg.setAttribute('viewBox',`0 0 ${SW} ${SH}`);
+  const hx=SW/2-HW/2,hy=finCy-H/2;
+  spots.forEach(s=>{s.x=hx+s.pt[0]*HW;s.y=hy+s.pt[1]*H;s.el.style.left=s.x+'px';s.el.style.top=s.y+'px'});
+  if(desk){
+    tw=clamp(SW*0.2,240,310);tilesEl.style.setProperty('--tw',tw+'px');
+    const sides={L:[],R:[]};PARTS.forEach((p,i)=>sides[p.side].push(i));
+    const top0=74,span=SH-70-top0-TH;
+    for(const sd of['L','R']){
+      const arr=sides[sd].sort((a,b)=>PARTS[a].o[0][1]-PARTS[b].o[0][1]);
+      arr.forEach((i,k)=>{
+        const y=top0+k*span/(arr.length-1),x=sd==='L'?Math.max(16,SW*0.03):SW-tw-Math.max(16,SW*0.03);
+        tl[i]=x;tt[i]=y;tiles[i].style.left=x+'px';tiles[i].style.top=y+'px';
+        const ax=sd==='L'?x+tw:x,ay=y+TH/2;
+        const o=spots.find(s=>s.i===i&&s.k===0);ox[i]=o.x;oy[i]=o.y;
+        const mx=(o.x+ax)/2;
+        leaders[i].setAttribute('d',`M${o.x} ${o.y} L${mx} ${o.y} L${mx+(sd==='L'?-1:1)*0} ${ay} L${ax} ${ay}`);
+      });
+    }
+  }
+}
+window.__layout=layout;
+let G=null;window.__dbg=()=>G;
+try{const gc=$('#gl');G=Shalfa3D(gc);if(G){gc.style.display='block';$('#water').style.display='none';boat.style.display='none';stick.dataset.gl='1'}}catch(err){console.error('3D init failed',err);G=null;const gc=$('#gl');if(gc)gc.style.display='none'}
+
+/* water canvas */
+const streaks=Array.from({length:70},()=>({x:Math.random(),y:Math.random(),l:50+Math.random()*190,a:.04+Math.random()*.13,v:.5+Math.random()*1.4,ph:Math.random()*6}));
+const foam=Array.from({length:18},(_,i)=>({t:Math.random(),s:i%2?1:-1}));
+let lastT=0;
+function drawWater(t,dt,speed,bx,by){
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,SW,SH);
+  ctx.lineCap='round';
+  const base=(speed*520+14)*dt/1000;
+  for(const s of streaks){
+    s.y+=base*s.v/SH*1.0;if(s.y>1.25)s.y-=1.3;
+    const x=s.x*SW+Math.sin(t/1700+s.ph)*6,y=s.y*SH-s.l;
+    const g=ctx.createLinearGradient(0,y,0,y+s.l);g.addColorStop(0,'rgba(120,225,235,0)');g.addColorStop(.5,`rgba(120,225,235,${s.a})`);g.addColorStop(1,'rgba(120,225,235,0)');
+    ctx.strokeStyle=g;ctx.lineWidth=1+s.v*.8;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+Math.sin(s.ph)*3,y+s.l);ctx.stroke();
+  }
+  if(speed>0.04){
+    const sy=by+H/2-8,spread=170*speed,len=300*speed;
+    for(const sd of[-1,1]){
+      const g=ctx.createLinearGradient(bx,sy,bx,sy+len);g.addColorStop(0,`rgba(190,245,250,${.55*speed})`);g.addColorStop(1,'rgba(190,245,250,0)');
+      ctx.strokeStyle=g;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(bx+sd*HW*.2,sy);ctx.lineTo(bx+sd*(HW*.2+spread),sy+len);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(bx+sd*HW*.1,sy);ctx.lineTo(bx+sd*(HW*.1+spread*.35),sy+len);ctx.globalAlpha=.5;ctx.stroke();ctx.globalAlpha=1;
+    }
+    for(const f of foam){f.t=(f.t+dt/1800*(.4+speed))%1;const x=bx+f.s*(HW*.2+spread*f.t),y=sy+len*f.t;ctx.fillStyle=`rgba(220,250,252,${.5*speed*(1-f.t)})`;ctx.beginPath();ctx.arc(x,y,2+f.t*2,0,6.3);ctx.fill()}
+  }
+}
+
+const CAP=[[.0,'01','القارب كاملاً','The full vessel'],[.22,'02','رفع الغطاء العلوي','Lifting the top deck'],[.38,'03','داخل الهيكل','Inside the hull'],[.47,'04','تفكيك القطع: اضغط أي قطعة للتفاصيل','Parts out: tap any part for details'],[.93,'05','أكمل النزول لبقية المشروع','Keep scrolling for the full project']];
+let capIdx=-1,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function update(p,t,dt){
+  const mv=sm(.07,.2,p),cx=lerp(heroCx,SW/2,mv),cy=lerp(heroCy,finCy,mv);
+  const speed=reduce?0:1-sm(.08,.2,p);
+  let gr=null;
+  if(G){
+    gr=G.frame(reduce?Math.min(p,1):p,t,dt,{heroCx,heroCy,finCy});
+  }else{
+    const bob=reduce?0:Math.sin(t/900)*5*(.3+.7*speed),rot=reduce?0:Math.sin(t/1300)*.8*(.3+.7*speed);
+    boat.style.transform=`translate(${cx-HW/2}px,${cy-H/2+bob}px) rotate(${rot}deg)`;
+    drawWater(t,dt,speed,cx,cy+bob);
+    const Lp=sm(.22,.36,p);
+    lid.style.transform=`translateX(-50%) translateY(${-Lp*8}%) rotateX(${-Lp*76}deg) scale(${1+Lp*.18})`;
+    lid.style.opacity=1-sm(.31,.38,p);lid.style.visibility=Lp>=1&&p>.38?'hidden':'visible';
+    const hv=sm(.24,.31,p);hull.style.opacity=hv;hull.style.transform=`scale(${lerp(.94,1,sm(.24,.4,p))})`;hull.style.filter=`brightness(${lerp(.55,1,sm(.3,.47,p))})`;
+    const sc=sm(.34,.47,p);scan.style.top=(sc*100)+'%';scan.style.opacity=(sc>0&&sc<1)?Math.sin(Math.PI*sc):0;
+  }
+  const hc=1-sm(.03,.12,p);copy.style.opacity=hc;copy.style.transform=desk?`translateY(calc(-50% + ${(1-hc)*-30}px))`:`translateY(${(1-hc)*-30}px)`;copy.style.visibility=hc<.01?'hidden':'visible';
+  const so=sm(.4,.47,p);
+  spots.forEach(s=>{
+    if(gr){const q=s.k===0?gr.pts[s.i]:gr.motorR;s.x=q[0];s.y=q[1];s.el.style.left=s.x+'px';s.el.style.top=s.y+'px'}
+    s.el.style.opacity=so;s.el.classList.toggle('on',so>.9)});
+  PARTS.forEach((pt,i)=>{
+    const k=ORDER.indexOf(i),st=.47+k*.05,e=sm(st,st+.075,p);
+    if(desk){
+      const el=tiles[i],tcx=tl[i]+tw/2,tcy=tt[i]+TH/2;
+      if(gr){const q=gr.pts[i];ox[i]=q[0];oy[i]=q[1];
+        const sd=pt.side,ax=sd==='L'?tl[i]+tw:tl[i],ay=tt[i]+TH/2,mx=(ox[i]+ax)/2;
+        leaders[i].setAttribute('d',`M${ox[i]} ${oy[i]} L${mx} ${oy[i]} L${mx} ${ay} L${ax} ${ay}`)}
+      el.style.opacity=e;el.style.transform=`translate(${(ox[i]-tcx)*(1-e)}px,${(oy[i]-tcy)*(1-e)}px) scale(${.15+.85*e})`;
+      el.classList.toggle('live',e>.95);leaders[i].style.strokeDashoffset=1-sm(st+.03,st+.1,p);
+    }
+  });
+  let ci=0;CAP.forEach((c,i)=>{if(p>=c[0])ci=i});
+  if(ci!==capIdx){capIdx=ci;const c=CAP[ci];capEl.innerHTML=`<i>${c[1]}</i>${T(c[2],c[3])}`}
+  capEl.style.opacity=p<.06?0:1;cue.style.opacity=p<.04?1:0;
+  prog.style.width=(p*100)+'%';
+}
+function frame(t){
+  const dt=Math.min(64,t-lastT||16);lastT=t;
+  const r=track.getBoundingClientRect(),total=r.height-SH;
+  if(r.bottom>-50&&r.top<SH+50){update(clamp(-r.top/total),t,dt)}
+  requestAnimationFrame(frame);
+}
+addEventListener('resize',layout);
+setLang(L0);layout();requestAnimationFrame(frame);
+})();
+
+</script>
+<script>
+/* ---------- Quick contact form ---------- */
+(function(){
+  /* ضع هنا البريد الذي تريد أن تصلك عليه رسائل النموذج، مثال: 'name@gmail.com'
+     Put the inbox that should receive the messages here. Leave empty to keep sending disabled. */
+  var CONTACT_TO='';
+  var ENDPOINT=CONTACT_TO?'https://formsubmit.co/ajax/'+encodeURIComponent(CONTACT_TO):'';
+  var DOMAINS=['gmail.com','googlemail.com','icloud.com','me.com','mac.com','outlook.com','hotmail.com','live.com','msn.com','yahoo.com','ymail.com','proton.me','protonmail.com','pm.me','aol.com','gmx.com','zoho.com','yandex.com'];
+  var $=function(id){return document.getElementById(id)};
+  var form=$('cform'); if(!form)return;
+  var f={name:$('cf-name'),email:$('cf-email'),msg:$('cf-msg')},err={name:$('cf-name-e'),email:$('cf-email-e'),msg:$('cf-msg-e')};
+  var btn=$('cf-send'),st=$('cstatus'),cnt=$('cf-count'),hp=$('cf-web');
+  var lang=function(){return document.documentElement.lang==='en'?'en':'ar'};
+  var M={
+    nameShort:['اكتب اسمك الحقيقي (حرفان على الأقل).','Enter your real name (at least 2 letters).'],
+    nameChars:['الاسم يقبل الحروف فقط.','The name can contain letters only.'],
+    nameJunk:['الاسم غير صالح، اكتب اسمك الحقيقي.','That does not look like a real name.'],
+    required:['هذا الحقل مطلوب.','This field is required.'],
+    emailFmt:['صيغة البريد غير صحيحة.','The email address is not valid.'],
+    emailJunk:['البريد غير صالح.','That email address does not look valid.'],
+    emailDomain:['استخدم بريداً من مزود معتمد مثل Gmail أو iCloud أو Outlook أو Yahoo.','Use an email from a trusted provider such as Gmail, iCloud, Outlook or Yahoo.'],
+    msgShort:['الرسالة قصيرة جداً (10 أحرف على الأقل).','The message is too short (at least 10 characters).'],
+    msgLong:['الرسالة أطول من 1000 حرف.','The message is longer than 1000 characters.'],
+    msgWords:['اكتب رسالة واضحة من ثلاث كلمات على الأقل.','Write a clear message of at least three words.'],
+    msgJunk:['الرسالة تبدو عشوائية، اكتب نصاً مفهوماً.','The message looks random. Please write readable text.'],
+    sending:['جاري الإرسال…','Sending…'],
+    sent:['تم الإرسال. وصلتك نسخة من رسالتك على بريدك، وسنرد عليك قريباً.','Sent. A copy of your message is on its way to your inbox and we will reply soon.'],
+    failed:['تعذّر الإرسال الآن. حاول مرة أخرى بعد قليل.','Could not send right now. Please try again in a moment.'],
+    off:['الإرسال غير مفعّل بعد على هذا الموقع.','Sending is not enabled on this site yet.'],
+    wait:['انتظر دقيقة قبل إرسال رسالة أخرى.','Please wait a minute before sending another message.'],
+    fix:['صحّح الحقول المعلّمة ثم أعد المحاولة.','Fix the highlighted fields and try again.']
+  };
+  var t=function(k){return M[k][lang()==='en'?1:0]};
+  var BAD_KEYS=/asdf|qwer|zxcv|sdfg|dfgh|hjkl|wert|ertyu|poiu|lkjh|mnbv|qaz|wsx/i;
+  function vName(v){
+    v=v.trim().replace(/\s+/g,' ');
+    if(!v)return'required';
+    if(v.length<2)return'nameShort';
+    if(!/^[\p{L}][\p{L}\p{M}' .\-]*$/u.test(v))return'nameChars';
+    var l=v.replace(/[^\p{L}]/gu,'');
+    if(l.length<2)return'nameShort';
+    if(/(.)\1{3,}/u.test(l)||new Set(l.toLowerCase()).size<2)return'nameJunk';
+    if(/^[A-Za-z]+$/.test(l)&&l.length>=4&&!/[aeiouy]/i.test(l))return'nameJunk';
+    if(BAD_KEYS.test(l))return'nameJunk';
+    return'';
+  }
+  function vEmail(v){
+    v=v.trim().toLowerCase();
+    if(!v)return'required';
+    var m=/^([a-z0-9][a-z0-9._%+\-]{1,63})@([a-z0-9\-]+(?:\.[a-z0-9\-]+)+)$/.exec(v);
+    if(!m)return'emailFmt';
+    var lo=m[1],dm=m[2];
+    if(/\.\.|\.$/.test(lo))return'emailFmt';
+    if(/(.)\1{5,}/.test(lo)||BAD_KEYS.test(lo))return'emailJunk';
+    if(DOMAINS.indexOf(dm)<0)return'emailDomain';
+    if((dm==='gmail.com'||dm==='googlemail.com')&&!/^[a-z0-9.]{6,30}(\+[a-z0-9._\-]*)?$/.test(lo))return'emailFmt';
+    return'';
+  }
+  function vMsg(v){
+    v=v.trim();
+    if(!v)return'required';
+    if(v.length<10)return'msgShort';
+    if(v.length>1000)return'msgLong';
+    var w=v.split(/\s+/).filter(function(x){return /\p{L}{2,}/u.test(x)});
+    if(w.length<3)return'msgWords';
+    var letters=(v.match(/\p{L}/gu)||[]).length;
+    if(letters/v.length<.6||/(.)\1{5,}/u.test(v))return'msgJunk';
+    var uniq=new Set(w.map(function(x){return x.toLowerCase()})).size;
+    if(w.length>=4&&uniq/w.length<.5)return'msgJunk';
+    var bad=w.filter(function(x){return /^[A-Za-z]{4,}$/.test(x)&&!/^[A-Z]+$/.test(x)&&(!/[aeiouy]/i.test(x)||BAD_KEYS.test(x))}).length;
+    if(bad>=2||(w.length<=4&&bad>=1))return'msgJunk';
+    return'';
+  }
+  var V={name:vName,email:vEmail,msg:vMsg},touched={};
+  function check(k,show){
+    var code=V[k](f[k].value),el=f[k];
+    if(show){err[k].textContent=code?t(code):'';el.classList.toggle('bad',!!code);el.classList.toggle('ok',!code&&!!el.value.trim());el.setAttribute('aria-invalid',code?'true':'false')}
+    return code;
+  }
+  ['name','email','msg'].forEach(function(k){
+    f[k].addEventListener('blur',function(){touched[k]=1;check(k,true)});
+    f[k].addEventListener('input',function(){if(touched[k])check(k,true);if(k==='msg')cnt.textContent=f.msg.value.length+' / 1000'});
+  });
+  function status(kind,key){st.className=kind||'';st.textContent=key?t(key):'';st.dataset.k=key||''}
+  function readTs(){try{return +localStorage.getItem('shalfa-contact-ts')||0}catch(e){return 0}}
+  function writeTs(){try{localStorage.setItem('shalfa-contact-ts',String(Date.now()))}catch(e){}}
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var first=null;
+    ['name','email','msg'].forEach(function(k){touched[k]=1;if(check(k,true)&&!first)first=f[k]});
+    if(first){status('fail','fix');first.focus();return}
+    if(hp.value){status('good','sent');return}              // bots fill the hidden field: pretend success, send nothing
+    if(Date.now()-readTs()<60000){status('fail','wait');return}
+    if(!ENDPOINT){status('fail','off');return}
+    var name=f.name.value.trim().replace(/\s+/g,' '),email=f.email.value.trim().toLowerCase(),msg=f.msg.value.trim();
+    btn.disabled=true;status('','sending');
+    fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({
+      name:name,email:email,message:msg,
+      _subject:'SHALFA website message from '+name,_template:'table',_captcha:'false',
+      _autoresponse:'شكراً لتواصلك مع فريق شلفا. وصلتنا رسالتك وسنرد عليك قريباً.\nThank you for contacting the SHALFA team. We received your message and will reply soon.\n\n— '+msg
+    })}).then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})}).then(function(x){
+      if(x.ok&&(x.j.success===true||x.j.success==='true')){
+        writeTs();status('good','sent');form.reset();cnt.textContent='0 / 1000';touched={};
+        ['name','email','msg'].forEach(function(k){f[k].classList.remove('ok','bad');err[k].textContent=''});
+      }else status('fail','failed');
+    }).catch(function(){status('fail','failed')}).then(function(){btn.disabled=false});
+  });
+  function placeholders(){
+    var en=lang()==='en';
+    f.name.placeholder=en?'Your full name':'اسمك الكامل';
+    f.msg.placeholder=en?'Write your message here…':'اكتب رسالتك هنا…';
+    ['name','email','msg'].forEach(function(k){if(touched[k])check(k,true)});
+    if(st.dataset.k)st.textContent=t(st.dataset.k);
+  }
+  new MutationObserver(placeholders).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+  placeholders();
+  window.__cform={vName:vName,vEmail:vEmail,vMsg:vMsg};
+})();
+
+</script>
+
+</body>
+</html>
