@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SHALFA · شلفا</title>
+<meta name="description" content="بطاقة تعريفية لمشروع شلفا: نموذج أولي لمركبة سطحية غير مأهولة.">
+<meta name="theme-color" content="#080D12">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="img/logo.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:title" content="SHALFA · شلفا">
+<meta property="og:description" content="Unmanned Surface Vessel prototype · نموذج أولي لمركبة سطحية غير مأهولة">
+<meta property="og:image" content="https://shalfa-2025.github.io/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700&display=swap">
+<style>
+:root{--bg:#080D12;--bg2:#111B22;--bg3:#17252E;--line:#22343f;--green:#00B86B;--green-d:#0B5142;--cyan:#19B6C8;--fg:#F5F7FA;--fg2:#A8B5BF;--fg3:#7a8a96;
+--f-body:'IBM Plex Sans Arabic','Montserrat',system-ui,sans-serif;--f-disp:'Montserrat','IBM Plex Sans Arabic',system-ui,sans-serif;--f-mono:'IBM Plex Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{min-height:100vh;min-height:100dvh;background:var(--bg);color:var(--fg);font:400 15px/1.6 var(--f-body);display:grid;place-items:center;padding:max(20px,env(safe-area-inset-top)) 16px max(20px,env(safe-area-inset-bottom));
+background-image:radial-gradient(900px 500px at 50% -10%,#0b3b32 0,transparent 60%),radial-gradient(600px 400px at 100% 100%,#0a2a36 0,transparent 60%)}
+.en{display:none}
+html[lang=en] .ar{display:none}html[lang=en] .en{display:revert}
+html[lang=en] body{direction:ltr}
+.wrap{width:100%;max-width:430px;display:grid;gap:14px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.pill{font:600 12px var(--f-disp);letter-spacing:.04em;color:var(--fg);background:var(--bg2);border:1px solid var(--line);border-radius:99px;padding:7px 14px;cursor:pointer}
+.card{background:linear-gradient(180deg,var(--bg2),#0d151b);border:1px solid var(--line);border-radius:18px;padding:28px 22px 24px;text-align:center;position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--green-d),var(--green),var(--cyan))}
+.logo{width:116px;height:116px;border-radius:50%;background:#fff;display:grid;place-items:center;margin:0 auto 14px;border:3px solid var(--green-d);box-shadow:0 0 0 5px #0b161c,0 0 0 6px var(--line)}
+.logo img{width:86%;height:86%;object-fit:contain}
+h1{font:700 34px/1.1 var(--f-disp);letter-spacing:.14em;padding-inline-start:.14em}
+.sub{margin-top:6px;color:var(--green);font:600 13px var(--f-body)}
+.desc{margin:14px auto 0;color:var(--fg2);font-size:14.5px;max-width:34ch}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:16px}
+.chips span{font:500 11px var(--f-mono);color:var(--fg2);border:1px solid var(--line);border-radius:99px;padding:4px 10px;background:#0a1117}
+.btns{display:grid;gap:10px;margin-top:22px}
+.btn{display:flex;align-items:center;justify-content:center;gap:9px;padding:14px 18px;border-radius:12px;font:600 15px var(--f-body);text-decoration:none;cursor:pointer;border:1px solid var(--line);background:var(--bg3);color:var(--fg);-webkit-tap-highlight-color:transparent;transition:transform .12s,border-color .15s}
+.btn:active{transform:scale(.98)}
+.btn.main{background:var(--green);border-color:var(--green);color:#03170e;font-size:16px;padding:16px}
+.btn:hover{border-color:var(--green)}
+.btn svg{width:18px;height:18px;flex:none}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qr{display:grid;justify-items:center;gap:10px;margin-top:22px;padding-top:20px;border-top:1px dashed var(--line)}
+.qr img{width:176px;height:176px;border-radius:12px;background:#fff;display:block}
+.qr small{color:var(--fg3);font-size:12.5px}
+.qr a{color:var(--cyan);font:500 12.5px var(--f-body);text-decoration:none}
+.foot{text-align:center;color:var(--fg3);font:500 11.5px var(--f-mono)}
+.help{display:none;background:#0a1117;border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-align:start;font-size:13.5px;color:var(--fg2);margin-top:2px}
+.help.on{display:block}.help b{color:var(--fg)}
+#toast{position:fixed;inset-inline:0;bottom:24px;margin:auto;width:max-content;max-width:90vw;background:var(--bg3);border:1px solid var(--green-d);color:var(--fg);padding:10px 18px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<main class="wrap">
+ <div class="top"><span class="foot">SHALFA-2025</span><button class="pill" id="lang" type="button">English</button></div>
+ <section class="card">
+  <div class="logo"><img src="img/logo.png" alt="SHALFA"></div>
+  <h1>SHALFA</h1>
+  <p class="sub"><span class="ar">شلفا · مركبة سطحية غير مأهولة</span><span class="en">Unmanned Surface Vessel Prototype</span></p>
+  <p class="desc"><span class="ar">نموذج أولي يجمع الذكاء الاصطناعي والرؤية الحاسوبية والتحكم المدمج في قارب يرى ويتتبع ويتحرك.</span><span class="en">Engineering intelligent marine systems through AI, computer vision, and autonomous technologies.</span></p>
+  <div class="chips"><span>AI</span><span>Computer Vision</span><span>YOLOv5</span><span>Raspberry Pi</span><span>Thermal</span><span>2025</span></div>
+
+  <div class="btns">
+   <a class="btn main" id="open" href="./"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h7v7M21 3l-9 9M10 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-4"/></svg><span class="ar">فتح الموقع</span><span class="en">Open the website</span></a>
+   <button class="btn" id="install" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg><span class="ar">حفظ كتطبيق على جهازك</span><span class="en">Save as an app on your device</span></button>
+   <div class="help" id="help"></div>
+   <div class="row">
+    <button class="btn" id="vcf" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM19 8v6M22 11h-6"/></svg><span class="ar">حفظ الجهة</span><span class="en">Save contact</span></button>
+    <button class="btn" id="share" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg><span class="ar">مشاركة</span><span class="en">Share</span></button>
+   </div>
+  </div>
+
+  <div class="qr">
+   <img src="qr-shalfa.png" alt="QR code" width="176" height="176">
+   <small><span class="ar">امسح الرمز بكاميرا الجوال لفتح الموقع</span><span class="en">Scan with your phone camera to open the website</span></small>
+   <a href="qr-shalfa.png" download="SHALFA-QR.png"><span class="ar">تحميل رمز QR</span><span class="en">Download QR code</span></a>
+  </div>
+ </section>
+ <p class="foot"><span class="ar">بدأ المشروع وأُنشئ في عام 2025</span><span class="en">Project started and created in 2025</span></p>
+</main>
+<div id="toast" role="status"></div>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var SITE=new URL('./',location.href).href;
+  var root=document.documentElement;
+  function L(){return root.lang==='en'?'en':'ar'}
+  function setLang(l){root.lang=l;root.dir=l==='en'?'ltr':'rtl';$('lang').textContent=l==='en'?'العربية':'English';try{localStorage.setItem('shalfa-card-lang',l)}catch(e){}}
+  var sv='ar';try{sv=localStorage.getItem('shalfa-card-lang')||'ar'}catch(e){}
+  setLang(sv);
+  $('lang').onclick=function(){setLang(L()==='en'?'ar':'en');render()};
+  function toast(t){var e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove('on')},2600)}
+  var T={saved:['تم حفظ جهة الاتصال.','Contact saved.'],copied:['تم نسخ الرابط.','Link copied.'],
+   ios:['<b>على iPhone / iPad:</b> افتح الموقع في Safari، اضغط زر المشاركة <b>⬆︎</b> ثم <b>إضافة إلى الشاشة الرئيسية</b>.','<b>On iPhone / iPad:</b> open the site in Safari, tap the Share button <b>⬆︎</b>, then <b>Add to Home Screen</b>.'],
+   other:['<b>من قائمة المتصفح (⋮):</b> اختر <b>تثبيت التطبيق</b> أو <b>إضافة إلى الشاشة الرئيسية</b>.','<b>From the browser menu (⋮):</b> choose <b>Install app</b> or <b>Add to Home screen</b>.'],
+   done:['التطبيق مثبّت بالفعل على جهازك.','The app is already installed on this device.']};
+  var t=function(k){return T[k][L()==='en'?1:0]};
+  var dp=null,help=$('help'),helpKey=null;
+  function render(){if(helpKey){help.innerHTML=t(helpKey)}}
+  window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();dp=e});
+  window.addEventListener('appinstalled',function(){dp=null;toast(t('done'))});
+  $('install').onclick=function(){
+    if(window.matchMedia('(display-mode: standalone)').matches||navigator.standalone){toast(t('done'));return}
+    if(dp){dp.prompt();dp.userChoice.finally(function(){dp=null});return}
+    helpKey=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)?'ios':'other';
+    help.classList.add('on');render();help.scrollIntoView({behavior:'smooth',block:'center'});
+  };
+  $('vcf').onclick=function(){
+    var v=['BEGIN:VCARD','VERSION:3.0','FN:SHALFA شلفا','N:;SHALFA;;;','ORG:SHALFA Project','TITLE:Unmanned Surface Vessel Prototype','URL:'+SITE,'NOTE:Engineering intelligent marine systems through AI\\, computer vision\\, and autonomous technologies. 2025.','END:VCARD'].join('\r\n');
+    var b=new Blob([v],{type:'text/vcard;charset=utf-8'}),a=document.createElement('a');
+    a.href=URL.createObjectURL(b);a.download='SHALFA.vcf';document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(a.href)},4000);toast(t('saved'));
+  };
+  $('share').onclick=function(){
+    var d={title:'SHALFA شلفا',text:L()==='en'?'SHALFA — Unmanned Surface Vessel prototype':'شلفا — نموذج أولي لمركبة سطحية غير مأهولة',url:SITE};
+    if(navigator.share){navigator.share(d).catch(function(){})}
+    else if(navigator.clipboard){navigator.clipboard.writeText(SITE).then(function(){toast(t('copied'))},function(){prompt('',SITE)})}
+    else prompt('',SITE);
+  };
+  if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(function(){});
+})();
+</script>
+</body>
+</html>
