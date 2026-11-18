@@ -1,5 +1,5 @@
 /* SHALFA service worker: network first, falls back to the cache when offline. */
-const V='shalfa-v1',CORE=['./','index.html','card.html','manifest.webmanifest','icon-192.png','icon-512.png','img/logo.png','qr-shalfa.png'];
+const V='shalfa-v2',CORE=['./','index.html','card.html','manifest.webmanifest','card.webmanifest','icon-192.png','icon-512.png','img/logo.png','qr-shalfa.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(CORE).catch(()=>{})).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{

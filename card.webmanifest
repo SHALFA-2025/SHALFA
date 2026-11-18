@@ -1,0 +1,33 @@
+{
+  "name": "SHALFA Card · بطاقة شلفا",
+  "short_name": "SHALFA Card",
+  "description": "نموذج أولي لمركبة سطحية غير مأهولة · Unmanned Surface Vessel prototype",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./card.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080D12",
+  "theme_color": "#080D12",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "id": "./card.html"
+}
