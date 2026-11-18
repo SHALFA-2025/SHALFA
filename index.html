@@ -1307,7 +1307,7 @@ S.push(sec('future',T('٠٩ · الخطة','09 · Roadmap'),T('التطوير ا
  `<div class="road">${FUT.map((f,i)=>`<div class="it reveal"><div class="dot">17.${i+1}</div><div><span class="status st-plan">${T('مخطط','Planned')}</span><h3>${T(f[0],f[1])}</h3><p>${T(f[2],f[3])}</p></div></div>`).join('')}</div>`,1));
 
 /* team */
-const TEAM=[['FA','فارس ناصر الغامدي','Faris Nasser Al-Ghamdi','team-faris.jpg','https://faris-al-danish.github.io/card.html'],['AA','عبدالله محمد الغامدي','Abdullah Mohammed Al-Ghamdi','team-abdullah.jpg',''],['MA','محمد قاسم الحسين','Mohammed Qasem Al-Hussain','team-mohammed.jpg','']];
+const TEAM=[['FA','فارس ناصر الغامدي','Faris Nasser Al-Ghamdi','team-faris.jpg','https://faris-al-danish.github.io/card.html'],['AA','عبدالله محمد الغامدي','Abdullah Mohammed Al-Ghamdi','team-abdullah.jpg','https://abdullahce89.github.io/ABDULLAH_WEBSITE/#contact'],['MA','محمد قاسم الحسين','MOHAMED KASEM ALHOSEIN','team-mohammed.jpg','https://malhosein.github.io']];
 S.push(sec('team',T('١٠ · الفريق','10 · Team'),T('فريق المشروع','Project Team'),T('طوّر الفريق المشروع بشكل مشترك.','The team developed the project jointly.'),
  `<div class="team">${TEAM.map(m=>`<div class="card mem reveal"><div class="av"><img src="img/${m[3]}" alt="${m[2]}" loading="lazy"></div><h3>${T(m[1],m[2])}</h3><div class="role">${T('مهندس حاسب','Computer Engineer')}</div>${m[4]?`<a class="btn ghost mem-contact" href="${m[4]}" target="_blank" rel="noopener noreferrer">${T('تواصل','Contact')}</a>`:''}</div>`).join('')}</div>
  <h3 class="sub-h">${T('المواصفات الفنية','Technical specifications')}</h3>
