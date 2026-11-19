@@ -1541,7 +1541,7 @@ setLang(L0);layout();requestAnimationFrame(frame);
 (function(){
   /* ضع هنا البريد الذي تريد أن تصلك عليه رسائل النموذج، مثال: 'name@gmail.com'
      Put the inbox that should receive the messages here. Leave empty to keep sending disabled. */
-  var CONTACT_TO='aifm20302030@gmail.com';
+  var CONTACT_TO='';
   var ENDPOINT=CONTACT_TO?'https://formsubmit.co/ajax/'+encodeURIComponent(CONTACT_TO):'';
   var DOMAINS=['gmail.com','googlemail.com','icloud.com','me.com','mac.com','outlook.com','hotmail.com','live.com','msn.com','yahoo.com','ymail.com','proton.me','protonmail.com','pm.me','aol.com','gmx.com','zoho.com','yandex.com'];
   var $=function(id){return document.getElementById(id)};
@@ -1640,8 +1640,8 @@ setLang(L0);layout();requestAnimationFrame(frame);
       if(x.ok&&(x.j.success===true||x.j.success==='true')){
         writeTs();status('good','sent');form.reset();cnt.textContent='0 / 1000';touched={};
         ['name','email','msg'].forEach(function(k){f[k].classList.remove('ok','bad');err[k].textContent=''});
-      }else{try{console.warn('SHALFA contact: FormSubmit replied',x.j)}catch(e){}status('fail','failed')}
-    }).catch(function(){status('fail','failed')}).then(function(){btn.disabled=false});
+      }else{try{console.warn('SHALFA contact: FormSubmit replied',x.j)}catch(e){}status('fail','failed');try{st.textContent+=' ['+(x.j&&x.j.message?String(x.j.message).slice(0,160):'HTTP '+(x.ok?'ok':'error'))+']'}catch(e){}}
+    }).catch(function(err){status('fail','failed');try{st.textContent+=' [network: '+String(err&&err.message||err).slice(0,80)+']'}catch(e){}}).then(function(){btn.disabled=false});
   });
   function placeholders(){
     var en=lang()==='en';
