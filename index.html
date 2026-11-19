@@ -402,10 +402,6 @@ html[lang=ar] #cform label{font-family:var(--f-body)}
  <div class="cwrap">
   <div class="cside">
    <p><span class="ar">اكتب اسمك وبريدك ورسالتك، وتصل مباشرة إلى فريق شلفا. كل الحقول مطلوبة، وتصلك نسخة من رسالتك على بريدك بعد الإرسال.</span><span class="en">Enter your name, email and message and it goes straight to the SHALFA team. Every field is required, and you receive a copy of your message by email after sending.</span></p>
-   <ul class="dots">
-    <li><span class="ar">يُقبل البريد من مزودين معتمدين فقط: Gmail وiCloud وOutlook وHotmail وYahoo وProton وغيرها من المزودين المعروفين.</span><span class="en">Only trusted email providers are accepted: Gmail, iCloud, Outlook, Hotmail, Yahoo, Proton and other well-known providers.</span></li>
-    <li><span class="ar">لا تُرسل الرسائل الفارغة أو العشوائية.</span><span class="en">Empty or random text cannot be sent.</span></li>
-   </ul>
   </div>
   <form id="cform" novalidate>
    <div class="field"><label for="cf-name"><span class="ar">الاسم</span><span class="en">Name</span><i>*</i></label><input id="cf-name" name="name" type="text" required maxlength="60" autocomplete="name"><small class="err" id="cf-name-e"></small></div>
@@ -1545,7 +1541,7 @@ setLang(L0);layout();requestAnimationFrame(frame);
 (function(){
   /* ضع هنا البريد الذي تريد أن تصلك عليه رسائل النموذج، مثال: 'name@gmail.com'
      Put the inbox that should receive the messages here. Leave empty to keep sending disabled. */
-  var CONTACT_TO='aifm20302030@gmail.com';
+  var CONTACT_TO='';
   var ENDPOINT=CONTACT_TO?'https://formsubmit.co/ajax/'+encodeURIComponent(CONTACT_TO):'';
   var DOMAINS=['gmail.com','googlemail.com','icloud.com','me.com','mac.com','outlook.com','hotmail.com','live.com','msn.com','yahoo.com','ymail.com','proton.me','protonmail.com','pm.me','aol.com','gmx.com','zoho.com','yandex.com'];
   var $=function(id){return document.getElementById(id)};
@@ -1644,7 +1640,7 @@ setLang(L0);layout();requestAnimationFrame(frame);
       if(x.ok&&(x.j.success===true||x.j.success==='true')){
         writeTs();status('good','sent');form.reset();cnt.textContent='0 / 1000';touched={};
         ['name','email','msg'].forEach(function(k){f[k].classList.remove('ok','bad');err[k].textContent=''});
-      }else status('fail','failed');
+      }else{try{console.warn('SHALFA contact: FormSubmit replied',x.j)}catch(e){}status('fail','failed')}
     }).catch(function(){status('fail','failed')}).then(function(){btn.disabled=false});
   });
   function placeholders(){
