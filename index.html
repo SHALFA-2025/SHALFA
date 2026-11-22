@@ -224,11 +224,10 @@ html[lang=ar] .layer h3{font-family:var(--f-body);letter-spacing:0}
 @media(max-width:860px){.pgrid{grid-template-columns:1fr}}
 .pq{margin:18px 0 0;padding:20px 22px;border-inline-start:3px solid var(--green);background:linear-gradient(90deg,#00b86a14,transparent);font-size:1.12em;line-height:1.85;font-weight:600;color:#e9fff3;border-radius:6px}
 .pvid{margin:0;min-width:0}
-.pplay{position:relative;width:100%;aspect-ratio:16/10;border:1px solid #00b86a55;border-radius:12px;background:radial-gradient(120% 90% at 50% 0%,#0d3b2e 0%,#071318 70%);color:var(--fg);display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;cursor:pointer;overflow:hidden;padding:16px}
-.pplay::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,#ffffff06 0 2px,transparent 2px 14px)}
+.pplay{position:relative;width:100%;aspect-ratio:16/10;border:1px solid #00b86a55;border-radius:12px;background:linear-gradient(180deg,#05101566 0%,#051015d9 100%),url(video/moi-video.jpg) center/cover no-repeat,radial-gradient(120% 90% at 50% 0%,#0d3b2e 0%,#071318 70%);color:var(--fg);display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;cursor:pointer;overflow:hidden;padding:16px}
 .pplay>*{position:relative}
 .pshield{color:var(--green);display:grid;place-items:center;width:58px;height:58px;border-radius:50%;border:1px solid #00b86a66;background:#00b86a1a}
-.pplay b{font-size:1.05em}.pplay small{color:var(--fg2)}
+.pplay b{font-size:1.05em;text-shadow:0 1px 8px #000}.pplay small{color:var(--fg2)}
 .pplay .play{font-style:normal;width:54px;height:54px;border-radius:50%;background:var(--green);color:#041;display:grid;place-items:center;padding-inline-start:4px;margin-top:4px}
 .pplay:hover .play{filter:brightness(1.12)}
 .pvid video{width:100%;max-height:70vh;border-radius:12px;background:#000;display:block}
@@ -1200,7 +1199,7 @@ const S=[];
 /* problem */
 S.push(sec('problem',T('٠٠ · الدافع','00 · Motivation'),T('حماية الوطن تبدأ بحماية رجاله','Protecting the nation starts with protecting its people'),
  T('بدأت شلفا من مشهد حقيقي في الدفاع عن أمن المملكة العربية السعودية، ومن سؤال: كيف نقلّل ما يتعرّض له رجال الأمن من خطر؟','SHALFA began with a real scene from the defense of Saudi Arabia\'s security, and a question: how can we reduce the risk our security personnel face?'),
- `<div class="pgrid"><div class="pstory"><p>${T('جاءت الفكرة بعد مشاهدة مقطع لوزارة الداخلية السعودية يعرض مشاهد المواجهة البحرية والتعامل مع زورق مفخخ، وما ارتبط بها من تضحيات رجال أمن سعوديين أثناء أداء واجبهم في حماية الوطن. كان لهذا المشهد أثر كبير في صاحب المشروع، ودفعه إلى سؤال واحد:','The idea came after watching a Saudi Ministry of Interior video showing maritime confrontation scenes and the handling of an explosive-laden boat, and the sacrifices of Saudi security personnel in the line of duty. The scene left a deep impression and led to one question:')}</p>
+ `<div class="pgrid"><div class="pstory"><p>${T('جاءت الفكرة بعد مشاهدة مقطع لوزارة الداخلية السعودية يعرض مشاهد المواجهة البحرية والتعامل مع زورق مفخخ، وما ارتبط بها من تضحيات رجال أمن سعوديين أثناء أداء واجبهم في حماية الوطن. كان لهذا المشهد أثر كبير فينا نحن فريق المشروع، ودفعنا إلى سؤال واحد:','The idea came after watching a Saudi Ministry of Interior video showing maritime confrontation scenes and the handling of an explosive-laden boat, and the sacrifices of Saudi security personnel in the line of duty. The scene left a deep impression on our team and led us to one question:')}</p>
  <blockquote class="pq">${T('هل يمكننا تطوير وسيلة بحرية غير مأهولة تتقدم نحو التهديد، وتوفّر المراقبة والمعلومات والتحكم عن بُعد، بما يقلل الحاجة إلى تعريض رجال الأمن للمواجهة المباشرة؟','Can we develop an unmanned maritime platform that moves toward the threat and provides monitoring, information and remote control, reducing the need to expose security personnel to direct confrontation?')}</blockquote></div>
  <figure class="pvid"><button type="button" class="pplay" id="xplay" data-id="1970422024842379652" aria-label="Play video"><span class="pshield"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2.5 4.5 5.5v6c0 4.6 3.2 8.4 7.5 10 4.3-1.6 7.5-5.4 7.5-10v-6L12 2.5Z"/><path d="m9.5 12 2 2 3.5-4"/></svg></span><b>${T('مقطع وزارة الداخلية السعودية','Saudi Ministry of Interior video')}</b><small>${T('اضغط للتشغيل','Tap to play')}</small><i class="play">▶</i></button>
  <figcaption>${T('المصدر: حساب وزارة الداخلية السعودية على منصة X.','Source: Saudi Ministry of Interior account on X.')} <a href="https://x.com/MOISaudiArabia/status/1970422024842379652" target="_blank" rel="noopener noreferrer">${T('فتح في X','Open on X')}</a></figcaption></figure></div>
@@ -1575,7 +1574,7 @@ setLang(L0);layout();requestAnimationFrame(frame);
 (function(){
   /* ضع هنا البريد الذي تريد أن تصلك عليه رسائل النموذج، مثال: 'name@gmail.com'
      Put the inbox that should receive the messages here. Leave empty to keep sending disabled. */
-  var CONTACT_TO='aifm20302030@gmail.com';
+  var CONTACT_TO='';
   var ENDPOINT=CONTACT_TO?'https://formsubmit.co/ajax/'+encodeURIComponent(CONTACT_TO):'';
   var DOMAINS=['gmail.com','googlemail.com','icloud.com','me.com','mac.com','outlook.com','hotmail.com','live.com','msn.com','yahoo.com','ymail.com','proton.me','protonmail.com','pm.me','aol.com','gmx.com','zoho.com','yandex.com'];
   var $=function(id){return document.getElementById(id)};
